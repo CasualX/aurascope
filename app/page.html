@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Aurascope - Search</title>
+	<!-- <link rel="icon" type="image/svg+xml" href="./favicon.svg" /> -->
+	<script src="./deps/vue.prod.js"></script>
+	<!-- Tailwind generated classes -->
+	<!-- <link rel="stylesheet" type="text/css" href="./styles.css" /> -->
+$STYLES$
+</head>
+<body>
+$TEMPLATES$
+<div id="app">
+	<app-main></app-main>
+</div>
+<noscript>Aurascope is a WebApp and requires JS.</noscript>
+</body>
+$SCRIPTS$
+<script>
+Vue.createApp({
+	data() {
+		return {};
+	},
+}).component('app-main', AppMain)
+	.component('app-sidebar', AppSidebar)
+	.component('app-coninput', AppConInput)
+	.component('panel-console', PanelConsole)
+	.component('panel-xss', PanelXss)
+	.component('widget-copy', WidgetCopy)
+	.component('widget-button', WidgetButton)
+	.component('icon-play', IconPlay)
+	.component('icon-pause', IconPause)
+	.component('icon-clear', IconClear)
+	.component('icon-power', IconPower)
+	.component('icon-xmark', IconXMark)
+	.mount('#app');
+</script>
+</html>
