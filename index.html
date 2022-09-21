@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Aurascope - Search</title>
+	<!-- <link rel="icon" type="image/svg+xml" href="./favicon.svg" /> -->
+	<script src="./deps/vue.prod.js"></script>
+	<!-- Tailwind generated classes -->
+	<!-- <link rel="stylesheet" type="text/css" href="./styles.css" /> -->
+
+<style>
+.app-coninput {
+	display: grid;
+	grid-template: auto / 70px 500px 80px 80px;
+	user-select: none;
+	padding: 6px 12px;
+	gap: 4px;
+	background-color: rgb(60, 60, 60);
+}
+.app-coninput > span {
+	line-height: 24px;
+}
+</style>
+<style>
+html, body, #app, .app-main, .app-main {
+	font-family: 'Roboto', 'Segoe UI', 'Verdana', sans-serif;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+.app-main {
+	display: grid;
+	grid-template: 42px calc(100% - 42px) / auto;
+}
+
+.app-main > .h {
+	color: rgb(196, 196, 196);
+	background-color: rgb(60, 60, 60);
+
+	padding: 2px 0;
+
+	display: grid;
+	grid-template: auto / 200px auto 160px;
+}
+.app-main > .h > .logo {
+	line-height: 38px;
+	user-select: none;
+	text-transform: uppercase;
+	font-weight: lighter;
+	padding-left: 10px;
+	letter-spacing: 5px;
+}
+.app-main > .h button {
+	margin: 4px 2px;
+	padding: 0 10px;
+}
+.app-main > .h input {
+	width: 400px;
+	margin: 4px 2px;
+}
+.app-main > .h > div {
+	display: flex;
+}
+
+.app-main > .m {
+	color: rgb(204, 204, 204);
+	background-color: rgb(30, 30, 30);
+
+	display: grid;
+	grid-template: 100% / 200px auto;
+}
+.app-main > .m > .m2 {
+	display: grid;
+	grid-template: calc(100% - 42px) 42px / auto;
+}
+</style>
+<style>
+.app-sidebar {
+	color: rgb(204, 204, 204);
+	background-color: rgb(37, 37, 37);
+
+	user-select: none;
+
+	display: flex;
+	flex-direction: column;
+}
+.app-sidebar > div {
+	height: 32px;
+	line-height: 32px;
+	padding: 4px 10px;
+}
+.app-sidebar > div:nth-child(1) {
+	border-bottom: 1px solid rgb(71, 71, 71);
+}
+.app-sidebar > div.clicky {
+	cursor: pointer;
+}
+.app-sidebar > div.clicky.selected {
+	background-color: rgb(50, 50, 50) !important;
+}
+.app-sidebar > div.clicky:hover {
+	background-color: rgb(44, 44, 44);
+}
+</style>
+<style>
+.panel-console {
+	width: 100%;
+	height: 100%;
+	padding: 12px 25px;
+	box-sizing: border-box;
+	overflow-y: scroll;
+}
+.panel-console > .lines {
+	font-family: 'Fira Code', 'Courier New', Courier, monospace;
+	font-size: 14px;
+	line-height: 20px;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	cursor: text;
+}
+</style>
+<style>
+.panel-xss {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	position: relative;
+}
+.panel-xss > div.html {
+	font-family: 'Fira Code', 'Courier New', Courier, monospace;
+	font-size: 14px;
+	line-height: 16px;
+	padding: 12px 25px;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	overflow-y: scroll;
+	cursor: text;
+}
+.panel-xss > div.html pre {
+	margin: 0;
+}
+</style>
+<style>
+.widget-button {
+	margin: 4px 2px;
+	padding: 0 10px;
+}
+.widget-button > * {
+	display: inline-block;
+	vertical-align: middle;
+}
+.widget-button > svg {
+	width: 12px;
+	height: 12px;
+	stroke: black;
+	fill: none;
+}
+</style>
+<style>
+.widget-copy {
+	position: absolute;
+	right: 25px;
+	bottom: 15px;
+	cursor: pointer;
+	user-select: none;
+}
+</style>
+</head>
+<body>
+
+<template id="app-coninput">
+	<div class="app-coninput">
+		<span>Console:</span>
+		<input
+			type="text"
+			v-model="input"
+			@keyup.enter="submit"
+			@keyup.up="historyNav(-1)"
+			@keyup.down="historyNav(1)"
+			:disabled="disabled">
+		<button @click="submit" :disabled="disabled">Submit</button>
+		<button @click="exit" :disabled="disabled">Exit</button>
+	</div>
+</template>
+<template id="app-main">
+	<div class="app-main">
+		<div class="h">
+			<div class="logo">Aurascope</div>
+			<div>
+				<input type="text" v-model="conn.address" @keydown.enter="connect()" :readonly="socket != null" :disabled="socket != null">
+				<widget-button v-if="socket == null" @click="connect()" icon="icon-power" label="Connect"></widget-button>
+				<widget-button v-if="socket != null" @click="disconnect()" icon="icon-power" label="Disconnect"></widget-button>
+			</div>
+			<div>
+				<widget-button v-if="conn.paused" @click="conn.paused = false;" icon="icon-play" label="Play"></widget-button>
+				<widget-button v-if="!conn.paused" @click="conn.paused = true;" icon="icon-pause" label="Pause"></widget-button>
+				<widget-button @click="clear()" icon="icon-clear" label="Clear"></widget-button>
+			</div>
+		</div>
+		<div class="m">
+			<app-sidebar :topics="pageTitles" @select-topic="changeCurrentPage"></app-sidebar>
+			<div class="m2">
+				<panel-xss v-if="currentPage in pages" :html="pages[currentPage]"></panel-xss>
+				<panel-console v-else :lines="consoleLines"></panel-console>
+				<app-coninput @submit="consoleInput" @clear="consoleClear" :disabled="!conn.ready"></app-coninput>
+			</div>
+		</div>
+	</div>
+</template>
+<template id="app-sidebar">
+	<div class="app-sidebar">
+		<div v-for="topic in topics" @click="selectTopic(topic)" @wheel="selectTopic(topic)" class="clicky" :class="{ 'selected': selectedTopic == topic }">
+			{{ topic }}
+		</div>
+	</div>
+</template>
+<template id="icon-clear">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5">
+		<path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+	</svg>
+</template>
+<template id="icon-pause">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5">
+		<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
+	</svg>
+</template>
+<template id="icon-play">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5">
+		<path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+	</svg>
+</template>
+<template id="icon-power">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" stroke-width="32">
+		<path d="M312 87.666v33.47C381.676 144.582 432 210.522 432 288c0 97.047-78.953 176-176 176S80 385.047 80 288c0-77.478 50.324-143.418 120-166.864v-33.47C112.422 112.179 48 192.7 48 288c0 114.691 93.309 208 208 208s208-93.309 208-208c0-95.3-64.422-175.821-152-200.334Z"/>
+		<path d="M240 16h32v272h-32z"/>
+	</svg>
+</template>
+<template id="icon-xmark">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5">
+		<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+	</svg>
+</template>
+<template id="panel-console">
+	<div class="panel-console" ref="consoleRef" @copy="copyEvent">
+		<pre class="lines">
+			<div v-for="line in linesCopy" :key="line" class="line">{{ line }}</div>
+		</pre>
+		<!-- <widget-copy :text="copyText"></widget-copy> -->
+	</div>
+</template>
+<template id="panel-xss">
+	<div class="panel-xss" @copy="copyEvent">
+		<div v-html="html" class="html"></div>
+		<!-- <widget-copy :text="html"></widget-copy> -->
+	</div>
+</template>
+<template id="widget-button">
+	<button class="widget-button"><component v-if="icon != null" :is="icon"></component><span>&nbsp;{{ label }}</span></button>
+</template>
+<template id="widget-copy">
+	<div class="widget-copy" title="Copy to clipboard" @click="copyText"><span style="font-size: .875em; margin-right: .125em; position: relative; top: -.25em; left: -.125em">📄<span style="position: absolute; top: .25em; left: .25em">📄</span></span></div>
+</template>
+<div id="app">
+	<app-main></app-main>
+</div>
+<noscript>Aurascope is a WebApp and requires JS.</noscript>
+</body>
+
+<script>
+"use strict"
+
+var AppConInput = {
+	name: 'app-coninput',
+	template: '#app-coninput',
+	data() {
+		return {
+			input: "",
+			history: [],
+			historyIndex: 0,
+		};
+	},
+	props: ['disabled'],
+	methods: {
+		submit() {
+			let text = this.input;
+			this.$emit('submit', text);
+			this.input = "";
+			this.history.push(text);
+			this.historyIndex = this.history.length;
+		},
+		historyNav(dir) {
+			let index = this.historyIndex + dir;
+			index = Math.min(index, this.history.length);
+			index = Math.max(index, 0);
+			if (index != this.historyIndex) {
+				if (index >= 0 && index < this.history.length) {
+					this.input = this.history[index];
+				}
+				else {
+					this.input = "";
+				}
+				this.historyIndex = index;
+			}
+		},
+		clear() {
+			this.$emit('clear');
+		},
+		exit() {
+			this.$emit('submit', "exit!");
+		},
+	},
+};
+</script>
+<script>
+"use strict"
+
+let SOCKET = null;
+
+function argv() {
+	let result = {};
+	for (var arg of window.location.hash.substring(1).split("&")) {
+		let pos = arg.indexOf("=");
+		if (pos >= 0) {
+			result[arg.substring(0, pos)] = decodeURIComponent(arg.substring(pos + 1));
+		}
+	}
+	return result;
+}
+
+var MAX_CONSOLE_LINES = 10000;
+
+var AppMain = {
+	name: 'app-main',
+	data() {
+		return {
+			// Connection information
+			conn: {
+				address: "ws://localhost:28912/",
+				error: null,
+				paused: false,
+				ready: false,
+			},
+			// WebSocket instance, null if disconnected
+			socket: null,
+			// Current page being shown
+			currentPage: "Console",
+			// Page content
+			pages: {},
+			// Console
+			consoleLines: [],
+		};
+	},
+	computed: {
+		pageTitles() {
+			let keys = Object.keys(this.pages).sort();
+			return ["Console", ...keys];
+		},
+	},
+	methods: {
+		connect() {
+			this.conn.error = null;
+			this.conn.paused = false;
+			this.conn.ready = false;
+
+			if (this.socket) {
+				this.disconnect(null);
+			}
+
+			// Move the window location to reflect the connection address
+			window.location.hash = "address=" + encodeURIComponent(this.conn.address);
+
+			let sock = new WebSocket(this.conn.address);
+			this.socket = window.SOCKET = sock;
+			sock.onopen = e => {
+				this.conn.ready = true;
+				this.clear();
+			};
+			sock.onmessage = e => {
+				try {
+					if (e.data.startsWith("{")) {
+						let data = JSON.parse(e.data);
+						switch (data.target) {
+							case 'console/log':
+								this.consoleLog("" + data.message);
+								break;
+							case 'debug/write':
+								this.writePage(data.message.scope, data.message.content);
+								break;
+							default:
+								console.log(data.target, data.message);
+								break;
+						}
+					}
+					else {
+						let [line, text] = a.data.split("\n", 2);
+						if (!this.conn.paused) {
+							this.pages[line] = "" + text;
+						}
+					}
+				}
+				catch (ex) {
+					console.error(ex);
+				}
+			};
+			sock.onclose = e => {
+				this.disconnect(null);
+			}
+			sock.onerror = ex => {
+				this.conn.error = "Can't establish a connection to the server.";
+				console.error(ex);
+				this.disconnect(ex);
+			};
+		},
+		disconnect() {
+			if (this.socket) {
+				this.socket.close();
+				this.socket = window.SOCKET = null;
+			}
+			this.conn.ready = false;
+		},
+		writePage(scope, content) {
+			if (!this.conn.paused) {
+				this.pages[scope] = "" + content;
+			}
+			window.PAGES = this.pages;
+		},
+		// Clears the pages and console
+		clear() {
+			this.pages = {};
+			this.consoleLines = [];
+		},
+		changeCurrentPage(page) {
+			this.currentPage = page;
+		},
+		consoleInput(text) {
+			if (this.socket) {
+				this.consoleLines.push("> " + text);
+				this.socket.send(text);
+			}
+			else {
+				this.consoleLines.push("Please connect to the host first.");
+			}
+		},
+		consoleClear() {
+			this.consoleLines = [];
+		},
+		consoleLog(line) {
+			this.consoleLines.push(line);
+			if (this.consoleLines.length > (MAX_CONSOLE_LINES + 100)) {
+				this.consoleLines = this.consoleLines.slice(this.consoleLines.length - MAX_CONSOLE_LINES)
+			}
+		},
+		sendCmd(cmd) {
+			if (this.socket) {
+				this.socket.send(cmd);
+			}
+		},
+	},
+	mounted() {
+		let args = argv();
+		if ('address' in args) {
+			this.conn.address = args.address;
+		}
+	},
+	template: '#app-main',
+};
+</script>
+<script>
+"use strict"
+
+var AppSidebar = {
+	name: 'app-sidebar',
+	template: '#app-sidebar',
+
+	data() {
+		return {
+			selectedTopic: null,
+		};
+	},
+	props: ['topics'],
+	watch: {
+		topics() {
+			if (!this.topics.includes(this.selectedTopic)) {
+				this.selectedTopic = null;
+			}
+		}
+	},
+	methods: {
+		selectTopic(topic) {
+			this.selectedTopic = topic;
+			this.$emit('select-topic', topic);
+		},
+	},
+};
+</script>
+<script>
+"use strict"
+
+var IconClear = {
+	name: 'icon-clear',
+	template: '#icon-clear',
+	data() {
+		return {};
+	},
+};
+</script>
+<script>
+"use strict"
+
+var IconPause = {
+	name: 'icon-pause',
+	template: '#icon-pause',
+	data() {
+		return {};
+	},
+};
+</script>
+<script>
+"use strict"
+
+var IconPlay = {
+	name: 'icon-play',
+	template: '#icon-play',
+	data() {
+		return {};
+	},
+};
+</script>
+<script>
+"use strict"
+
+var IconPower = {
+	name: 'icon-power',
+	template: '#icon-power',
+	data() {
+		return {};
+	},
+};
+</script>
+<script>
+"use strict"
+
+var IconXMark = {
+	name: 'icon-xmark',
+	template: '#icon-xmark',
+	data() {
+		return {};
+	},
+};
+</script>
+<script>
+"use strict"
+
+var PanelConsole = {
+	name: 'panel-console',
+	template: '#panel-console',
+
+	data() {
+		return {
+			scrollOncePerTick: true,
+		};
+	},
+	props: ['lines'],
+	computed: {
+		linesCopy() {
+			return this.lines.slice();
+		},
+		copyText() {
+			return this.lines.join("\n");
+		},
+	},
+	watch: {
+		linesCopy() {
+			this.scrollToEnd(false);
+		},
+	},
+	methods: {
+		scrollToEnd(force) {
+			if (this.scrollOncePerTick) {
+				let el = this.$refs.consoleRef;
+				// From StackOverflow: Scroll to the bottom only if we're already at the bottom
+				if (force || el.scrollHeight - el.scrollTop - el.clientHeight < 1) {
+					this.scrollOncePerTick = false;
+					Vue.nextTick(() => {
+						el.scrollTop = el.scrollHeight;
+						this.scrollOncePerTick = true;
+					});
+				}
+			}
+		},
+		copyEvent(e) {
+			if (document.getSelection().toString() == "") {
+				e.clipboardData.setData("text/plain", this.copyText);
+				e.preventDefault();
+			}
+		},
+	},
+	mounted() {
+		this.scrollToEnd(true);
+	},
+};
+</script>
+<script>
+"use strict"
+
+var PanelXss = {
+	name: 'panel-xss',
+	template: '#panel-xss',
+
+	data() {
+		return {}
+	},
+	props: ['html'],
+	methods: {
+		copyText() {
+			window.navigator.clipboard.writeText(this.html);
+		},
+		copyEvent(e) {
+			if (document.getSelection().toString() == "") {
+				e.clipboardData.setData("text/plain", this.html);
+				e.preventDefault();
+			}
+		},
+	},
+};
+</script>
+<script>
+"use strict"
+
+var WidgetButton = {
+	name: 'widget-button',
+	template: '#widget-button',
+	data() {
+		return {};
+	},
+	props: ['icon', 'label'],
+};
+</script>
+<script>
+"use strict"
+
+var WidgetCopy = {
+	name: 'widget-copy',
+	template: '#widget-copy',
+	data() {
+		return {};
+	},
+	props: ['text'],
+	methods: {
+		copyText() {
+			window.navigator.clipboard.writeText(this.text);
+		},
+	},
+};
+</script>
+<script>
+Vue.createApp({
+	data() {
+		return {};
+	},
+}).component('app-main', AppMain)
+	.component('app-sidebar', AppSidebar)
+	.component('app-coninput', AppConInput)
+	.component('panel-console', PanelConsole)
+	.component('panel-xss', PanelXss)
+	.component('widget-copy', WidgetCopy)
+	.component('widget-button', WidgetButton)
+	.component('icon-play', IconPlay)
+	.component('icon-pause', IconPause)
+	.component('icon-clear', IconClear)
+	.component('icon-power', IconPower)
+	.component('icon-xmark', IconXMark)
+	.mount('#app');
+</script>
+</html>
+
