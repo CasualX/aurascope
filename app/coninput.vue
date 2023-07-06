@@ -68,8 +68,9 @@ var AppConInput = {
 	padding: 6px 12px;
 	gap: 4px;
 	background-color: rgb(60, 60, 60);
+	z-index: 1; /* good fix :) */
 }
 .app-coninput > span {
-	line-height: 24px;
+	line-height: 30px;
 }
 </style>

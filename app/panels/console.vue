@@ -11,13 +11,13 @@ var PanelConsole = {
 			scrollOncePerTick: true,
 		};
 	},
-	props: ['lines'],
+	props: ['console'],
 	computed: {
 		linesCopy() {
-			return this.lines.slice();
+			return this.console.lines.slice();
 		},
 		copyText() {
-			return this.lines.join("\n");
+			return this.console.lines.join("\n");
 		},
 	},
 	watch: {
@@ -45,6 +45,12 @@ var PanelConsole = {
 				e.preventDefault();
 			}
 		},
+		consoleInput(text) {
+			this.console.submit(text);
+		},
+		consoleClear() {
+			this.console.lines = [];
+		},
 	},
 	mounted() {
 		this.scrollToEnd(true);
@@ -54,22 +60,29 @@ var PanelConsole = {
 
 <template id="panel-console">
 	<div class="panel-console" ref="consoleRef" @copy="copyEvent">
-		<pre class="lines">
-			<div v-for="line in linesCopy" :key="line" class="line">{{ line }}</div>
-		</pre>
-		<!-- <widget-copy :text="copyText"></widget-copy> -->
+		<div class="content">
+			<pre class="lines">
+				<div v-for="line in linesCopy" :key="line" class="line">{{ line }}</div>
+			</pre>
+			<!-- <widget-copy :text="copyText"></widget-copy> -->
+		</div>
+		<app-coninput @submit="consoleInput" @clear="consoleClear" :disabled="!console.ready"></app-coninput>
 	</div>
 </template>
 
 <style>
 .panel-console {
+	display: grid;
+	grid-template: calc(100% - 42px) 42px / auto;
+}
+.panel-console > .content {
 	width: 100%;
 	height: 100%;
 	padding: 12px 25px;
 	box-sizing: border-box;
 	overflow-y: scroll;
 }
-.panel-console > .lines {
+.panel-console > .content > .lines {
 	font-family: 'Fira Code', 'Courier New', Courier, monospace;
 	font-size: 14px;
 	line-height: 20px;

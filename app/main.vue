@@ -17,32 +17,112 @@ function argv() {
 
 var MAX_CONSOLE_LINES = 10000;
 
+const convertArrayToObject = (array, key) => {
+	const initialValue = {};
+	return array.reduce((obj, item) => {
+		return {
+			...obj,
+			[item[key]]: item,
+		};
+	}, initialValue);
+};
+
 var AppMain = {
 	name: 'app-main',
 	data() {
+		let self = this;
+		let console = {
+			lines: [],
+			get ready() {
+				return self.conn.ready;
+			},
+			submit(text) {
+				self.consoleInput(text);
+			},
+		};
+		let consoleTopic = {
+			title: "Console",
+			is: "panel-console",
+			groupid: "Console",
+			props: {
+				console: console,
+			},
+			icon: {
+				url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAjklEQVR4nO3VPQqEMBCG4fcSLnok2VsnhaBWa2Gv3mNsYiNkCncSRPPBNJPiIUN+oORt+QIbIMa1Aq0GrwnQoxYNlsQVzXth60iBbz1qB4zAJzfch970By5X4Ar4hf4MNLlgwk6nsDbwdLg6jbrOBQ+Rw+WVp9FbwF3kOmmws4AtIgW+zX/sE6JOg0uelx3XxAOblnvqngAAAABJRU5ErkJggg==",
+				style: {
+					filter: "invert(1.0)",
+					opacity: "0.8",
+				}
+			}
+		};
 		return {
 			// Connection information
 			conn: {
-				address: "ws://localhost:28912/",
+				address: "ws://localhost:30145/",
 				error: null,
 				paused: false,
 				ready: false,
 			},
 			// WebSocket instance, null if disconnected
 			socket: null,
-			// Current page being shown
-			currentPage: "Console",
+			// Current topic being shown
+			currentTopic: consoleTopic,
 			// Page content
 			pages: {},
 			// Console
-			consoleLines: [],
+			console: console,
+			consoleTopic: consoleTopic,
+			// Settings UI
+			settings: {
+				cvars: {
+					sendPropValue(cvar, value = undefined) {
+						if (value === undefined) {
+							value = self.settings.cvars[cvar];
+						}
+						else {
+							self.settings.cvars[cvar] = value;
+						}
+						self.sendCmd("@" + cvar + " " + value);
+					},
+					fetchSettings() {
+						self.sendCmd("@settings!");
+					},
+				},
+				ui: {
+					icons: {},
+					tabs: [],
+				},
+			},
 		};
 	},
 	computed: {
-		pageTitles() {
-			let keys = Object.keys(this.pages).sort();
-			return ["Console", ...keys];
-		},
+		sidebarTopics() {
+			return [
+				this.consoleTopic,
+
+				...this.settings.ui.tabs.map(tab => ({
+					title: tab.title,
+					is: "panel-settings",
+					groupid: "Settings",
+					props: {
+						cvars: this.settings.cvars,
+						tab: tab,
+					},
+					icon: this.settings.ui.icons[tab.title],
+				})),
+
+				...Object.keys(this.pages).sort().map(page => ({
+					title: page,
+					is: "panel-xss",
+					groupid: "XSS",
+					props: {
+						page: this.pages[page],
+						console: this.console,
+					},
+					icon: null,
+				})),
+			];
+		}
 	},
 	methods: {
 		connect() {
@@ -74,6 +154,15 @@ var AppMain = {
 							case 'debug/write':
 								this.writePage(data.message.scope, data.message.content);
 								break;
+							case 'settings/cvars':
+								for (let line of data.message.split("\n")) {
+									let [key, value] = line.split("=", 2);
+									this.settings.cvars[key] = value;
+								}
+								break;
+							case 'settings/ui':
+								this.settings.ui = JSON.parse(data.message);
+								break;
 							default:
 								console.log(data.target, data.message);
 								break;
@@ -81,9 +170,7 @@ var AppMain = {
 					}
 					else {
 						let [line, text] = a.data.split("\n", 2);
-						if (!this.conn.paused) {
-							this.pages[line] = "" + text;
-						}
+						this.writePage(line, text);
 					}
 				}
 				catch (ex) {
@@ -105,37 +192,40 @@ var AppMain = {
 				this.socket = window.SOCKET = null;
 			}
 			this.conn.ready = false;
+			this.settings.ui.tabs = [];
 		},
 		writePage(scope, content) {
 			if (!this.conn.paused) {
-				this.pages[scope] = "" + content;
+				if (!this.pages[scope]) {
+					this.pages[scope] = {};
+				}
+				this.pages[scope].html = "" + content;
 			}
-			window.PAGES = this.pages;
 		},
 		// Clears the pages and console
 		clear() {
 			this.pages = {};
-			this.consoleLines = [];
+			this.console.lines = [];
 		},
-		changeCurrentPage(page) {
-			this.currentPage = page;
+		changeCurrentTopic(topic) {
+			this.currentTopic = topic;
 		},
 		consoleInput(text) {
 			if (this.socket) {
-				this.consoleLines.push("> " + text);
+				this.console.lines.push("> " + text);
 				this.socket.send(text);
 			}
 			else {
-				this.consoleLines.push("Please connect to the host first.");
+				this.console.lines.push("Please connect to the host first.");
 			}
 		},
 		consoleClear() {
-			this.consoleLines = [];
+			this.console.lines = [];
 		},
 		consoleLog(line) {
-			this.consoleLines.push(line);
-			if (this.consoleLines.length > (MAX_CONSOLE_LINES + 100)) {
-				this.consoleLines = this.consoleLines.slice(this.consoleLines.length - MAX_CONSOLE_LINES)
+			this.console.lines.push(line);
+			if (this.console.lines.length > (MAX_CONSOLE_LINES + 100)) {
+				this.console.lines = this.console.lines.slice(this.console.lines.length - MAX_CONSOLE_LINES)
 			}
 		},
 		sendCmd(cmd) {
@@ -148,6 +238,7 @@ var AppMain = {
 		let args = argv();
 		if ('address' in args) {
 			this.conn.address = args.address;
+			this.connect();
 		}
 	},
 	template: '#app-main',
@@ -170,12 +261,11 @@ var AppMain = {
 			</div>
 		</div>
 		<div class="m">
-			<app-sidebar :topics="pageTitles" @select-topic="changeCurrentPage"></app-sidebar>
-			<div class="m2">
-				<panel-xss v-if="currentPage in pages" :html="pages[currentPage]"></panel-xss>
-				<panel-console v-else :lines="consoleLines"></panel-console>
-				<app-coninput @submit="consoleInput" @clear="consoleClear" :disabled="!conn.ready"></app-coninput>
-			</div>
+			<app-sidebar :topics="sidebarTopics" @select-topic="changeCurrentTopic"></app-sidebar>
+			<keep-alive>
+				<component v-if="currentTopic != null" :is="currentTopic.is" :key="currentTopic.title" v-bind="currentTopic.props"></component>
+				<panel-console v-else :console="console"></panel-console>
+			</keep-alive>
 		</div>
 	</div>
 </template>
@@ -229,9 +319,5 @@ html, body, #app, .app-main, .app-main {
 
 	display: grid;
 	grid-template: 100% / 200px auto;
-}
-.app-main > .m > .m2 {
-	display: grid;
-	grid-template: calc(100% - 42px) 42px / auto;
 }
 </style>

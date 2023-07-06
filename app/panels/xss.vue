@@ -9,7 +9,12 @@ var PanelXss = {
 	data() {
 		return {}
 	},
-	props: ['html'],
+	props: ['page', 'console'],
+	computed: {
+		html() {
+			return this.page.html;
+		},
+	},
 	methods: {
 		copyText() {
 			window.navigator.clipboard.writeText(this.html);
@@ -20,6 +25,12 @@ var PanelXss = {
 				e.preventDefault();
 			}
 		},
+		consoleInput(text) {
+			this.console.submit(text);
+		},
+		consoleClear() {
+			this.console.lines = [];
+		},
 	},
 };
 </script>
@@ -28,6 +39,7 @@ var PanelXss = {
 	<div class="panel-xss" @copy="copyEvent">
 		<div v-html="html" class="html"></div>
 		<!-- <widget-copy :text="html"></widget-copy> -->
+		<app-coninput @submit="consoleInput" @clear="consoleClear" :disabled="!console.ready"></app-coninput>
 	</div>
 </template>
 
@@ -37,6 +49,8 @@ var PanelXss = {
 	height: 100%;
 	box-sizing: border-box;
 	position: relative;
+	display: grid;
+	grid-template: calc(100% - 42px) 42px / auto;
 }
 .panel-xss > div.html {
 	font-family: 'Fira Code', 'Courier New', Courier, monospace;
