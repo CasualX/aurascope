@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Aurascope - Search</title>
+		<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+		<link rel="stylesheet" type="text/css" href="./normalize.css" />
+		<link rel="stylesheet" type="text/css" href="./styles.css" />
+	</head>
+
+	<body>
+		<div id="app"></div>
+		<noscript>Aurascope is a WebApp and requires JS.</noscript>
+	</body>
+
+	<script type="importmap">
+		{
+			"imports": {
+				"vue": "./vue.esm-browser.js"
+			}
+		}
+	</script>
+
+	<script type="module">
+		import { createApp } from "vue";
+		import AppMain from "./main.vue.js";
+		import AppSidebar from "./sidebar.vue.js";
+		import AppConsoleInput from "./console-input.vue.js";
+		import PanelConsole from "./panels/console.vue.js";
+		import PanelXss from "./panels/xss.vue.js";
+		import PanelSettings from "./panels/settings.vue.js";
+		import WidgetCopy from "./widgets/copy.vue.js";
+		import WidgetButton from "./widgets/button.vue.js";
+		import SettingsUiToggle from "./settings/toggle.vue.js";
+		import SettingsUiStatus from "./settings/status.vue.js";
+		import SettingsUiNumber from "./settings/number.vue.js";
+		import IconPlay from "./icons/play.vue.js";
+		import IconPause from "./icons/pause.vue.js";
+		import IconClear from "./icons/clear.vue.js";
+		import IconPower from "./icons/power.vue.js";
+		import IconXMark from "./icons/xmark.vue.js";
+
+		const app = createApp(AppMain)
+			.component("app-sidebar", AppSidebar)
+			.component("app-console-input", AppConsoleInput)
+			.component("panel-console", PanelConsole)
+			.component("panel-xss", PanelXss)
+			.component("panel-settings", PanelSettings)
+			.component("widget-copy", WidgetCopy)
+			.component("widget-button", WidgetButton)
+			.component("settings-uiToggle", SettingsUiToggle)
+			.component("settings-uiStatus", SettingsUiStatus)
+			.component("settings-uiNumber", SettingsUiNumber)
+			.component("icon-play", IconPlay)
+			.component("icon-pause", IconPause)
+			.component("icon-clear", IconClear)
+			.component("icon-power", IconPower)
+			.component("icon-xmark", IconXMark)
+			.mount("#app");
+	</script>
+</html>

@@ -1,17 +1,12 @@
+import { nextTick } from "vue";
 
-<script>
-"use strict"
-
-var PanelConsole = {
-	name: 'panel-console',
-	template: '#panel-console',
-
+export default {
 	data() {
 		return {
 			scrollOncePerTick: true,
 		};
 	},
-	props: ['console'],
+	props: ["console"],
 	computed: {
 		linesCopy() {
 			return this.console.lines.slice();
@@ -32,7 +27,7 @@ var PanelConsole = {
 				// From StackOverflow: Scroll to the bottom only if we're already at the bottom
 				if (force || el.scrollHeight - el.scrollTop - el.clientHeight < 1) {
 					this.scrollOncePerTick = false;
-					Vue.nextTick(() => {
+					nextTick(() => {
 						el.scrollTop = el.scrollHeight;
 						this.scrollOncePerTick = true;
 					});
@@ -55,40 +50,16 @@ var PanelConsole = {
 	mounted() {
 		this.scrollToEnd(true);
 	},
-};
-</script>
-
-<template id="panel-console">
+	/*html*/
+	template: `
 	<div class="panel-console" ref="consoleRef" @copy="copyEvent">
-		<div class="content">
+		<div class="content scrollbar">
 			<pre class="lines">
 				<div v-for="line in linesCopy" :key="line" class="line">{{ line }}</div>
 			</pre>
 			<!-- <widget-copy :text="copyText"></widget-copy> -->
 		</div>
-		<app-coninput @submit="consoleInput" @clear="consoleClear" :disabled="!console.ready"></app-coninput>
+		<app-console-input @submit="consoleInput" @clear="consoleClear" :disabled="!console.ready"></app-console-input>
 	</div>
-</template>
-
-<style>
-.panel-console {
-	display: grid;
-	grid-template: calc(100% - 42px) 42px / auto;
-}
-.panel-console > .content {
-	width: 100%;
-	height: 100%;
-	padding: 12px 25px;
-	box-sizing: border-box;
-	overflow-y: scroll;
-}
-.panel-console > .content > .lines {
-	font-family: 'Fira Code', 'Courier New', Courier, monospace;
-	font-size: 14px;
-	line-height: 20px;
-	margin: 0;
-	display: flex;
-	flex-direction: column;
-	cursor: text;
-}
-</style>
+	`,
+};

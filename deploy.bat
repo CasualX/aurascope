@@ -7,7 +7,7 @@ pushd gh-pages
 git checkout --orphan gh-pages
 git rm -rf .
 
-xcopy /S "..\dist" .
+xcopy /S "..\app" .
 
 git add -A
 git commit -m "Deploy %git_commit%"

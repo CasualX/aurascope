@@ -1,3 +1,0 @@
-[project]
-page = "app/page.html"
-target = "dist/index.html"

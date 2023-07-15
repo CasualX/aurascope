@@ -1,0 +1,630 @@
+/* MAIN */
+@font-face {
+	font-family: "InterVar";
+	font-weight: 100 900;
+	font-display: swap;
+	font-style: normal;
+	src: url("./InterVariable.woff2?v=4.0") format("woff2-variations"), url("./InterVariable.woff2?v=4.0") format("woff2");
+	src: url("./InterVariable.woff2?v=4.0") format("woff2") tech("variations");
+}
+@font-face {
+	font-family: "InterVar";
+	font-weight: 100 900;
+	font-display: swap;
+	font-style: italic;
+	src: url("./InterVariable-Italic.woff2?v=4.0") format("woff2-variations"), url("./InterVariable-Italic.woff2?v=4.0") format("woff2");
+	src: url("./InterVariable-Italic.woff2?v=4.0") format("woff2") tech("variations");
+}
+
+:root {
+	--bg-50: 60 7% 98%;
+	--bg-100: 60 5% 96%;
+	--bg-200: 20 4% 90%;
+	--bg-300: 24 4% 83%;
+	--bg-400: 24 3% 64%;
+	--bg-500: 25 3% 45%;
+	--bg-600: 33 3% 32%;
+	--bg-700: 30 4% 25%;
+	--bg-800: 12 5% 15%;
+	--bg-900: 24 7% 10%;
+	--bg-950: 20 9% 4%;
+	/* 
+	--pr-50: 152 81% 96%;
+	--pr-100: 149 80% 90%;
+	--pr-200: 152 76% 80%;
+	--pr-300: 156 72% 67%;
+	--pr-400: 158 64% 52%;
+	--pr-500: 160 84% 39%;
+	--pr-600: 161 94% 30%;
+	--pr-700: 163 94% 24%;
+	--pr-800: 163 88% 20%;
+	--pr-900: 164 86% 16%;
+	--pr-950: 166 91% 9%; */
+
+	--pr-50: 138 76% 97%;
+	--pr-100: 141 84% 93%;
+	--pr-200: 141 79% 85%;
+	--pr-300: 142 77% 73%;
+	--pr-400: 142 69% 58%;
+	--pr-500: 142 71% 45%;
+	--pr-600: 142 76% 36%;
+	--pr-700: 142 72% 29%;
+	--pr-800: 143 64% 24%;
+	--pr-900: 144 61% 20%;
+	--pr-950: 145 80% 10%;
+}
+html,
+body,
+#app,
+.app-main {
+	font-family: "InterVar", "Segoe UI", "Verdana", sans-serif;
+	font-optical-sizing: auto;
+	font-size: 14px;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.app-main {
+	display: grid;
+	grid-template: 48px calc(100% - 48px) / auto;
+}
+
+.app-main > header {
+	color: rgb(196, 196, 196);
+	background-color: hsl(var(--bg-950));
+	padding: 8px 8px 8px 16px;
+	display: flex;
+	border-bottom: 1px solid hsl(var(--bg-900));
+}
+
+.app-main > header .logo {
+	user-select: none;
+	text-transform: uppercase;
+	font-weight: 300;
+	min-width: 200px;
+	letter-spacing: 4px;
+	display: flex;
+	align-items: center;
+}
+
+@media (max-width: 950px) {
+	.app-main > header .logo {
+		display: none;
+	}
+}
+
+.app-main > header .address,
+.app-main > header .address-input {
+	width: 100%;
+}
+
+.app-main > header .actions {
+	margin-left: auto;
+}
+
+.address > *,
+.actions > * {
+	margin-right: 6px;
+}
+
+.app-main > header > div {
+	display: flex;
+}
+
+.app-main > main {
+	color: hsl(var(--bg-100));
+	background-color: hsl(var(--bg-900));
+	display: grid;
+	grid-template: 100% / 200px auto;
+}
+
+.scrollbar::-webkit-scrollbar {
+	width: 8px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+	background: hsl(var(--bg-800));
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+	background: hsl(var(--bg-400));
+}
+
+/* For Firefox */
+.scrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: hsl(var(--bg-400)) hsl(var(--bg-800));
+}
+
+/* SIDEBAR */
+.app-sidebar {
+	color: hsl(var(--bg-50));
+	background-color: hsl(var(--bg-950));
+	user-select: none;
+	display: flex;
+	flex-direction: column;
+}
+
+.app-sidebar .topic-group {
+	display: flex;
+	flex-direction: column;
+}
+
+.app-sidebar .topic-group:first-child .topic-group-name {
+	padding-top: 8px;
+}
+
+.app-sidebar .topic-group-name {
+	padding-left: 16px;
+	padding-top: 16px;
+	padding-bottom: 4px;
+	font-size: 12px;
+	letter-spacing: 1px;
+	font-weight: medium;
+	color: hsl(var(--bg-400));
+	border-right: 1px solid hsl(var(--bg-800));
+	text-transform: uppercase;
+}
+
+.app-sidebar .topic {
+	display: flex;
+	align-items: center;
+	height: 36px;
+	padding: 4px 8px 4px 16px;
+	border-right: 1px solid hsl(var(--bg-800));
+}
+
+.app-sidebar .topic-title {
+	color: hsl(var(--bg-300));
+}
+
+.app-sidebar .sidebar-fill {
+	height: 100%;
+	border-right: 1px solid hsl(var(--bg-800));
+}
+
+.app-sidebar > div.topic {
+	cursor: pointer;
+	transition: 0.1s;
+}
+
+.app-sidebar .topic > img,
+.app-sidebar .topic > svg {
+	width: 20px;
+	height: 20px;
+	margin-right: 6px;
+}
+
+.app-sidebar .topic.selected {
+	background-color: hsl(var(--bg-900)) !important;
+	border-right: 1px solid hsl(var(--bg-900)) !important;
+	border-top: 1px solid hsl(var(--bg-800));
+	border-bottom: 1px solid hsl(var(--bg-800));
+}
+
+.app-sidebar .topic:hover {
+	background-color: hsl(var(--bg-900));
+	border-right: 1px solid hsl(var(--bg-900)) !important;
+}
+
+/* CONSOLE */
+.app-console-input {
+	display: grid;
+	grid-template: auto / 70px auto 80px 80px;
+	user-select: none;
+	padding: 6px 12px;
+	align-items: center;
+	gap: 4px;
+	background-color: hsl(var(--bg-950));
+	z-index: 1; /* good fix :) */
+}
+
+@media (min-width: 950px) {
+	.app-console-input {
+		grid-template: auto / 70px 500px 80px 80px;
+	}
+}
+
+/* PANEL */
+.panel-console {
+	display: grid;
+	grid-template: calc(100% - 48px) 48px / auto;
+}
+
+.panel-console > .content {
+	width: 100%;
+	height: 100%;
+	padding: 12px 24px;
+	box-sizing: border-box;
+	overflow-y: scroll;
+}
+
+.panel-console > .content > .lines {
+	font-family: "Fira Code", "Courier New", Courier, monospace;
+	font-size: 14px;
+	line-height: 20px;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	cursor: text;
+}
+
+/* SETTINGS */
+.panel-container {
+	container-type: inline-size;
+	container-name: settings;
+	overflow-y: scroll;
+}
+
+.panel-settings {
+	column-count: 1;
+	column-gap: 0px;
+	/* The right side has margin from the child element, so we leave that to 0 padding */
+	padding: 16px 0px 16px 16px;
+}
+
+@container settings (min-width: 800px) {
+	.panel-settings {
+		column-count: 2;
+	}
+}
+
+@container settings (min-width: 1200px) {
+	.panel-settings {
+		column-count: 3;
+	}
+}
+
+@container settings (min-width: 1600px) {
+	.panel-settings {
+		column-count: 4;
+	}
+}
+
+.panel-settings > .group {
+	border-radius: 8px;
+	background-color: hsl(var(--bg-800));
+	border: 1px solid hsl(var(--bg-700) / 0.8);
+	padding: 16px;
+	max-width: 800px;
+	break-inside: avoid;
+	page-break-inside: avoid;
+	margin-right: 16px;
+	margin-bottom: 16px;
+}
+
+@container settings (min-width: 800px) {
+	.panel-settings > .group {
+		max-width: 600px;
+	}
+}
+
+.panel-settings > .group > .header {
+	color: hsl(var(--bg-500));
+	margin-bottom: 8px;
+	font-weight: 550;
+	font-size: 12px;
+	letter-spacing: 0.5px;
+	user-select: none;
+	text-transform: uppercase;
+}
+
+/* XSS */
+.panel-xss {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	position: relative;
+	display: grid;
+	grid-template: calc(100% - 48px) 48px / auto;
+}
+
+.panel-xss > div.html {
+	font-family: "Fira Code", "Courier New", Courier, monospace;
+	font-size: 14px;
+	line-height: 16px;
+	padding: 12px 24px;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	overflow-y: scroll;
+	cursor: text;
+}
+
+.panel-xss > div.html pre {
+	margin: 0;
+}
+
+/* NUMBER */
+.settings-uiNumber {
+	margin: 20px 0px 4px 0px;
+	padding-right: 2px;
+	display: grid;
+	align-items: center;
+}
+
+.settings-uiNumber > .label {
+	color: hsl(var(--bg-400));
+	user-select: none;
+	grid-row: 1;
+	grid-column: 1;
+}
+
+.settings-uiNumber > .slider {
+	grid-row: 2;
+	grid-column: 1 / span 2;
+	padding-top: 4px;
+}
+
+.settings-uiNumber > .slider > input {
+	appearance: none;
+	width: 100%;
+	height: 8px;
+	border-radius: 4px;
+	background: hsl(var(--bg-950) / 0.5);
+	outline: none;
+}
+
+.settings-uiNumber > .slider > input::-moz-range-progress {
+	background: hsl(var(--bg-950) / 0.5);
+	height: 12px;
+	border-radius: 4px;
+}
+
+.settings-uiNumber > .slider > input::-webkit-slider-thumb {
+	appearance: none;
+	width: 10px;
+	height: 20px;
+	border-radius: 4px;
+	background: hsl(var(--bg-200));
+	cursor: pointer;
+}
+
+.settings-uiNumber > .slider > input::-moz-range-thumb {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: hsl(var(--bg-200));
+	cursor: pointer;
+}
+
+.settings-uiNumber > .value {
+	justify-self: end;
+	position: relative;
+	grid-row: 1;
+	grid-column: 2;
+}
+
+.settings-uiNumber > .value > .unit {
+	position: absolute;
+	left: 52px;
+	top: 6px;
+	user-select: none;
+	color: #908f8f;
+	align-self: baseline;
+	font-size: 12px;
+	color: hsl(var(--bg-400) / 0.9);
+}
+
+.settings-uiNumber > .value > input {
+	background: hsl(var(--bg-950) / 0.5);
+	color: hsl(var(--bg-200));
+	border: 1px solid hsl(var(--bg-700));
+	border-radius: 4px;
+	height: 24px;
+	width: 50px;
+	text-align: right;
+	padding: 0 4px;
+}
+
+.settings-uiNumber > .value > input:focus {
+	outline: none;
+}
+
+/* STATUS */
+.settings-uiStatus {
+	margin: 4px 8px;
+	padding: 4px 8px;
+	display: grid;
+	grid-template: auto / auto auto;
+	user-select: none;
+}
+
+.settings-uiStatus > .label {
+	color: hsl(var(--bg-400));
+}
+
+.settings-uiStatus > .value {
+	justify-self: end;
+}
+
+/* TOGGLE */
+.settings-uiToggle {
+	margin: 20px 0px 4px 0px;
+	padding-right: 8px;
+	display: grid;
+	grid-template: auto / auto auto;
+}
+
+.settings-uiToggle > .label {
+	color: hsl(var(--bg-400));
+	user-select: none;
+}
+
+.settings-uiToggle > .value {
+	justify-self: end;
+}
+
+.settings-uiToggle > .value {
+	position: relative;
+	display: inline-block;
+	width: 50px;
+	height: 23px;
+}
+
+.settings-uiToggle > .value > input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.settings-uiToggle > .value > .slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: hsl(var(--bg-950) / 0.5);
+	transition: 0.1s;
+}
+
+.settings-uiToggle > .value > .slider:before {
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 3px;
+	bottom: 3px;
+	background-color: hsl(var(--bg-300));
+	transition: 0.1s;
+}
+
+.settings-uiToggle > .value > input:checked + .slider {
+	background-color: hsl(var(--bg-950) / 0.5);
+}
+
+.settings-uiToggle > .value > input:checked + .slider:before {
+	background-color: hsl(var(--pr-500));
+}
+
+.settings-uiToggle > .value > input:checked + .slider:before {
+	transform: translateX(26px);
+}
+
+.settings-uiToggle > .value > .slider.round {
+	border-radius: 28px;
+}
+
+.settings-uiToggle > .value > .slider.round:before {
+	border-radius: 50%;
+}
+
+/* BUTTON */
+
+.widget-button-base {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 6px;
+	padding: 0 8px;
+	height: 32px;
+	cursor: pointer;
+}
+
+.widget-button {
+	background-color: hsl(var(--bg-900));
+	border: 1px solid hsl(var(--bg-800));
+	color: hsl(var(--bg-200));
+}
+
+.widget-button:disabled {
+	background-color: hsl(var(--bg-900) / 0.5);
+	border: 1px solid hsl(var(--bg-800) / 0.5);
+	color: hsl(var(--bg-200) / 0.5);
+}
+
+.widget-button:disabled:hover {
+	background-color: hsl(var(--bg-900) / 0.5);
+	border: 1px solid hsl(var(--bg-800) / 0.5);
+	color: hsl(var(--bg-200) / 0.5);
+}
+
+.widget-button:hover {
+	background-color: hsl(var(--bg-800));
+	border: 1px solid hsl(var(--bg-700));
+	color: hsl(var(--bg-100));
+}
+
+.widget-button-icon {
+	width: 16px;
+	height: 16px;
+	margin-right: 6px;
+	color: hsl(var(--bg-300));
+}
+
+.widget-button:hover .widget-button-icon {
+	color: hsl(var(--bg-200));
+}
+
+.widget-button:active {
+	background-color: hsl(var(--bg-700));
+	border: 1px solid hsl(var(--bg-600));
+	color: hsl(var(--bg-50));
+}
+
+.widget-button:active .widget-button-icon {
+	color: hsl(var(--bg-100));
+}
+
+/* PRIMARY BUTTON */
+.widget-button-primary {
+	background-color: hsl(var(--pr-500) / 0.1);
+	border: 1px solid hsl(var(--pr-500) / 0.3);
+	color: hsl(var(--pr-300));
+}
+
+.widget-button-primary .widget-button-icon {
+	color: hsl(var(--pr-300));
+}
+
+.widget-button-primary:hover {
+	background-color: hsl(var(--pr-500) / 0.2);
+	border: 1px solid hsl(var(--pr-400) / 0.6);
+	color: hsl(var(--pr-200));
+}
+
+.widget-button-primary:hover .widget-button-icon {
+	color: hsl(var(--pr-200));
+}
+
+.widget-button-primary:active {
+	background-color: hsl(var(--pr-500) / 0.3);
+	border: 1px solid hsl(var(--pr-400) / 0.8);
+	color: hsl(var(--pr-100));
+}
+
+.widget-button-primary:active .widget-button-icon {
+	color: hsl(var(--pr-100));
+}
+
+.widget-button-primary:disabled {
+	opacity: 0.5;
+}
+
+/* INPUT */
+.widget-input {
+	border-radius: 6px;
+	padding: 2px 8px;
+	height: 32px;
+	background-color: hsl(var(--bg-800));
+	border: 1px solid hsl(var(--bg-700));
+	color: hsl(var(--bg-300));
+}
+
+.widget-input:disabled {
+	background-color: hsl(var(--bg-800) / 0.5);
+	border: 1px solid hsl(var(--bg-700) / 0.5);
+	color: hsl(var(--bg-300) / 0.5);
+}
+
+/* COPY */
+.widget-copy {
+	position: absolute;
+	right: 24px;
+	bottom: 14px;
+	cursor: pointer;
+	user-select: none;
+}
