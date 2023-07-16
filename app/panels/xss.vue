@@ -25,21 +25,14 @@ var PanelXss = {
 				e.preventDefault();
 			}
 		},
-		consoleInput(text) {
-			this.console.submit(text);
-		},
-		consoleClear() {
-			this.console.lines = [];
-		},
 	},
 };
 </script>
 
 <template id="panel-xss">
-	<div class="panel-xss" @copy="copyEvent">
-		<div v-html="html" class="html"></div>
-		<!-- <widget-copy :text="html"></widget-copy> -->
-		<app-coninput @submit="consoleInput" @clear="consoleClear" :disabled="!console.ready"></app-coninput>
+	<div class="panel-xss">
+		<div v-html="html" class="html" @copy="copyEvent"></div>
+		<app-coninput :console="console"></app-coninput>
 	</div>
 </template>
 

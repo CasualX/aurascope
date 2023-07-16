@@ -4,7 +4,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Aurascope - Search</title>
-	<!-- <link rel="icon" type="image/svg+xml" href="./favicon.svg" /> -->
+	<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
 	<script src="./deps/vue.prod.js"></script>
 	<!-- Tailwind generated classes -->
 	<!-- <link rel="stylesheet" type="text/css" href="./styles.css" /> -->
@@ -24,9 +24,9 @@ Vue.createApp({
 		return {};
 	},
 }).component('app-main', AppMain)
+	.component('app-header', AppHeader)
 	.component('app-sidebar', AppSidebar)
-	.component('app-sidebar', AppSidebar)
-	.component('app-coninput', AppConInput)
+	.component('app-coninput', AppConsoleInput)
 	.component('panel-console', PanelConsole)
 	.component('panel-xss', PanelXss)
 	.component('panel-settings', PanelSettings)

@@ -21,6 +21,21 @@ var AppSidebar = {
 			}
 		},
 	},
+	computed: {
+		groupedTopics() {
+			// Group this.topics by groupid
+			let groups = {};
+			for (let topic of this.topics) {
+				if (topic.groupid in groups) {
+					groups[topic.groupid].push(topic);
+				}
+				else {
+					groups[topic.groupid] = [topic];
+				}
+			}
+			return groups;
+		},
+	},
 	methods: {
 		hasGroupSeparator(index) {
 			if (index < 1 || index >= this.topics.length) {
@@ -32,12 +47,6 @@ var AppSidebar = {
 			this.selectedTopic = topic;
 			this.$emit('select-topic', topic);
 		},
-		getClickyClass(topic, index) {
-			return {
-				'selected': this.selectedTopic != null && this.selectedTopic.title == topic.title,
-				'group-separator': this.hasGroupSeparator(index),
-			};
-		},
 	},
 	mounted() {
 		this.selectTopic(this.topics.length > 0 ? this.topics[0] : null);
@@ -47,47 +56,95 @@ var AppSidebar = {
 
 <template id="app-sidebar">
 	<div class="app-sidebar">
-		<div v-for="(topic, index) in topics" @click="selectTopic(topic)" @wheel="selectTopic(topic)" class="clicky" :class="getClickyClass(topic, index)">
-			<img v-if="topic.icon" :src="topic.icon.url" :style="topic.icon.style">
-			<span v-else></span>
-			<span>{{ topic.title }}</span>
+		<div class="topic-group" v-for="(topicGroup, groupName) in groupedTopics">
+			<div class="topic-group-name">{{groupName}}</div>
+			<div
+				v-for="(topic, index) in topicGroup"
+				@click="selectTopic(topic)"
+				@wheel="selectTopic(topic)"
+				class="topic"
+				:class="{ selected: this.selectedTopic?.title == topic.title }"
+			>
+				<img class="topic-icon" v-if="topic.icon" :src="topic.icon.url" :style="topic.icon.style" />
+				<span v-else></span>
+				<span class="topic-title">{{ topic.title }}</span>
+			</div>
 		</div>
+		<div class="sidebar-fill"></div>
 	</div>
 </template>
 
 <style>
 .app-sidebar {
-	color: rgb(224, 224, 224);
-	background-color: rgb(37, 37, 37);
-
+	color: hsl(var(--bg-50));
+	background-color: hsl(var(--bg-950));
 	user-select: none;
-
 	display: flex;
 	flex-direction: column;
 }
-.app-sidebar > div {
-	height: 32px;
-	line-height: 32px;
-	padding: 4px 10px;
+
+.app-sidebar .topic-group {
+	display: flex;
+	flex-direction: column;
 }
-.app-sidebar > div.clicky.group-separator {
-	border-top: 1px solid rgb(71, 71, 71);
+
+.app-sidebar .topic-group:first-child .topic-group-name {
+	padding-top: 8px;
 }
-.app-sidebar > div.clicky {
+
+.app-sidebar .topic-group-name {
+	padding-left: 16px;
+	padding-top: 16px;
+	padding-bottom: 4px;
+	font-size: 12px;
+	letter-spacing: 1px;
+	font-weight: medium;
+	color: hsl(var(--bg-400));
+	border-right: 1px solid hsl(var(--bg-800));
+	text-transform: uppercase;
+}
+
+.app-sidebar .topic {
+	display: flex;
+	align-items: center;
+	height: 36px;
+	padding: 4px 8px 4px 16px;
+	border-right: 1px solid hsl(var(--bg-800));
+}
+
+.app-sidebar .topic-title {
+	color: hsl(var(--bg-300));
+}
+
+.app-sidebar .sidebar-fill {
+	height: 100%;
+	border-right: 1px solid hsl(var(--bg-800));
+}
+
+.app-sidebar > div.topic {
 	cursor: pointer;
-	display: grid;
-	grid-template: auto / 25px auto;
-	transition: .1s;
+	transition: 0.1s;
 }
-.app-sidebar > div.clicky > img {
+
+.app-sidebar .topic > img,
+.app-sidebar .topic > svg {
 	width: 20px;
 	height: 20px;
-	align-self: center;
+	margin-right: 6px;
 }
-.app-sidebar > div.clicky.selected {
-	background-color: rgb(50, 50, 50) !important;
+
+.app-sidebar .topic.selected {
+	background-color: hsl(var(--bg-900)) !important;
+	border-right: 1px solid hsl(var(--bg-900)) !important;
+	border-top: 1px solid hsl(var(--bg-800));
+	border-bottom: 1px solid hsl(var(--bg-800));
 }
-.app-sidebar > div.clicky:hover {
-	background-color: rgb(44, 44, 44);
+.app-sidebar .topic:not(.selected) {
+	cursor: pointer;
+}
+
+.app-sidebar .topic:hover {
+	background-color: hsl(var(--bg-900));
+	border-right: 1px solid hsl(var(--bg-900)) !important;
 }
 </style>

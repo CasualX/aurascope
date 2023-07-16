@@ -45,12 +45,6 @@ var PanelConsole = {
 				e.preventDefault();
 			}
 		},
-		consoleInput(text) {
-			this.console.submit(text);
-		},
-		consoleClear() {
-			this.console.lines = [];
-		},
 	},
 	mounted() {
 		this.scrollToEnd(true);
@@ -59,14 +53,13 @@ var PanelConsole = {
 </script>
 
 <template id="panel-console">
-	<div class="panel-console" ref="consoleRef" @copy="copyEvent">
-		<div class="content">
+	<div class="panel-console">
+		<div class="content" ref="consoleRef" @copy="copyEvent">
 			<pre class="lines">
 				<div v-for="line in linesCopy" :key="line" class="line">{{ line }}</div>
 			</pre>
-			<!-- <widget-copy :text="copyText"></widget-copy> -->
 		</div>
-		<app-coninput @submit="consoleInput" @clear="consoleClear" :disabled="!console.ready"></app-coninput>
+		<app-coninput :console="console"></app-coninput>
 	</div>
 </template>
 

@@ -12,8 +12,7 @@ var IconPower = {
 </script>
 
 <template id="icon-power">
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" stroke-width="32">
-		<path d="M312 87.666v33.47C381.676 144.582 432 210.522 432 288c0 97.047-78.953 176-176 176S80 385.047 80 288c0-77.478 50.324-143.418 120-166.864v-33.47C112.422 112.179 48 192.7 48 288c0 114.691 93.309 208 208 208s208-93.309 208-208c0-95.3-64.422-175.821-152-200.334Z"/>
-		<path d="M240 16h32v272h-32z"/>
+	<svg class="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
+		<path fill="currentColor" fill-rule="evenodd" d="M10 2a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-1.5 0v-7.5A.75.75 0 0 1 10 2ZM5.404 4.343a.75.75 0 0 1 0 1.06a6.5 6.5 0 1 0 9.192 0a.75.75 0 1 1 1.06-1.06a8 8 0 1 1-11.313 0a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/>
 	</svg>
 </template>

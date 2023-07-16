@@ -33,11 +33,23 @@ var AppMain = {
 		let self = this;
 		let console = {
 			lines: [],
+			input: "",
+			history: [],
+			historyIndex: 0,
 			get ready() {
 				return self.conn.ready;
 			},
+			get paused() {
+				return self.conn.paused;
+			},
+			set paused(value) {
+				self.conn.paused = value;
+			},
 			submit(text) {
 				self.consoleInput(text);
+			},
+			clear() {
+				self.clear();
 			},
 		};
 		let consoleTopic = {
@@ -62,6 +74,19 @@ var AppMain = {
 				error: null,
 				paused: false,
 				ready: false,
+				get connected() {
+					return self.socket != null;
+				},
+				connect() {
+					if (!self.conn.connected) {
+						self.connect();
+					}
+				},
+				disconnect() {
+					if (self.conn.connected) {
+						self.disconnect();
+					}
+				},
 			},
 			// WebSocket instance, null if disconnected
 			socket: null,
@@ -114,7 +139,7 @@ var AppMain = {
 				...Object.keys(this.pages).sort().map(page => ({
 					title: page,
 					is: "panel-xss",
-					groupid: "XSS",
+					groupid: "Debugger",
 					props: {
 						page: this.pages[page],
 						console: this.console,
@@ -247,19 +272,7 @@ var AppMain = {
 
 <template id="app-main">
 	<div class="app-main">
-		<div class="h">
-			<div class="logo">Aurascope</div>
-			<div>
-				<input type="text" v-model="conn.address" @keydown.enter="connect()" :readonly="socket != null" :disabled="socket != null">
-				<widget-button v-if="socket == null" @click="connect()" icon="icon-power" label="Connect"></widget-button>
-				<widget-button v-if="socket != null" @click="disconnect()" icon="icon-power" label="Disconnect"></widget-button>
-			</div>
-			<div>
-				<widget-button v-if="conn.paused" @click="conn.paused = false;" icon="icon-play" label="Play"></widget-button>
-				<widget-button v-if="!conn.paused" @click="conn.paused = true;" icon="icon-pause" label="Pause"></widget-button>
-				<widget-button @click="clear()" icon="icon-clear" label="Clear"></widget-button>
-			</div>
-		</div>
+		<app-header :conn="conn"></app-header>
 		<div class="m">
 			<app-sidebar :topics="sidebarTopics" @select-topic="changeCurrentTopic"></app-sidebar>
 			<keep-alive>
@@ -281,7 +294,7 @@ html, body, #app, .app-main, .app-main {
 }
 .app-main {
 	display: grid;
-	grid-template: 42px calc(100% - 42px) / auto;
+	grid-template: 48px calc(100% - 48px) / auto;
 }
 
 .app-main > .h {
@@ -314,8 +327,8 @@ html, body, #app, .app-main, .app-main {
 }
 
 .app-main > .m {
-	color: rgb(204, 204, 204);
-	background-color: rgb(30, 30, 30);
+	color: hsl(var(--bg-100));
+	background-color: hsl(var(--bg-900));
 
 	display: grid;
 	grid-template: 100% / 200px auto;
