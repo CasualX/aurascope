@@ -1,0 +1,1694 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Aurascope - Search</title>
+	<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+	<script src="./deps/vue.prod.js"></script>
+	<!-- Tailwind generated classes -->
+	<!-- <link rel="stylesheet" type="text/css" href="./styles.css" /> -->
+
+<style>
+html, body, #app, .app-main, .app-main {
+	font-family: 'Roboto', 'Segoe UI', 'Verdana', sans-serif;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+.app-main {
+	display: grid;
+	grid-template: 48px calc(100% - 48px) / auto;
+}
+
+.app-main > .h {
+	color: rgb(196, 196, 196);
+	background-color: rgb(60, 60, 60);
+
+	padding: 2px 0;
+
+	display: grid;
+	grid-template: auto / 200px auto 160px;
+}
+.app-main > .h > .logo {
+	line-height: 38px;
+	user-select: none;
+	text-transform: uppercase;
+	font-weight: lighter;
+	padding-left: 10px;
+	letter-spacing: 5px;
+}
+.app-main > .h button {
+	margin: 4px 2px;
+	padding: 0 10px;
+}
+.app-main > .h input {
+	width: 400px;
+	margin: 4px 2px;
+}
+.app-main > .h > div {
+	display: flex;
+}
+
+.app-main > .m {
+	color: hsl(var(--bg-100));
+	background-color: hsl(var(--bg-900));
+
+	display: grid;
+	grid-template: 100% / 200px auto;
+}
+</style>
+<style>
+/* MAIN */
+@font-face {
+	font-family: "InterVar";
+	font-weight: 100 900;
+	font-display: swap;
+	font-style: normal;
+	src: url("./InterVariable.woff2?v=4.0") format("woff2-variations"), url("./InterVariable.woff2?v=4.0") format("woff2");
+	src: url("./InterVariable.woff2?v=4.0") format("woff2") tech("variations");
+}
+@font-face {
+	font-family: "InterVar";
+	font-weight: 100 900;
+	font-display: swap;
+	font-style: italic;
+	src: url("./InterVariable-Italic.woff2?v=4.0") format("woff2-variations"), url("./InterVariable-Italic.woff2?v=4.0") format("woff2");
+	src: url("./InterVariable-Italic.woff2?v=4.0") format("woff2") tech("variations");
+}
+
+:root {
+	--bg-50: 60 7% 98%;
+	--bg-100: 60 5% 96%;
+	--bg-200: 20 4% 90%;
+	--bg-300: 24 4% 83%;
+	--bg-400: 24 3% 64%;
+	--bg-500: 25 3% 45%;
+	--bg-600: 33 3% 32%;
+	--bg-700: 30 4% 25%;
+	--bg-800: 12 5% 15%;
+	--bg-900: 24 7% 10%;
+	--bg-950: 20 9% 6%;
+	/* 
+	--pr-50: 152 81% 96%;
+	--pr-100: 149 80% 90%;
+	--pr-200: 152 76% 80%;
+	--pr-300: 156 72% 67%;
+	--pr-400: 158 64% 52%;
+	--pr-500: 160 84% 39%;
+	--pr-600: 161 94% 30%;
+	--pr-700: 163 94% 24%;
+	--pr-800: 163 88% 20%;
+	--pr-900: 164 86% 16%;
+	--pr-950: 166 91% 9%; */
+
+	--pr-50: 138 76% 97%;
+	--pr-100: 141 84% 93%;
+	--pr-200: 141 79% 85%;
+	--pr-300: 142 77% 73%;
+	--pr-400: 142 69% 58%;
+	--pr-500: 142 71% 45%;
+	--pr-600: 142 76% 36%;
+	--pr-700: 142 72% 29%;
+	--pr-800: 143 64% 24%;
+	--pr-900: 144 61% 20%;
+	--pr-950: 145 80% 10%;
+}
+
+html,
+body,
+#app,
+.app-main {
+	font-family: "InterVar", "Segoe UI", "Verdana", sans-serif;
+	font-optical-sizing: auto;
+	font-size: 14px;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+</style>
+<style>
+.app-header {
+	color: rgb(196, 196, 196);
+	background-color: hsl(var(--bg-950));
+	padding: 8px 8px 8px 16px;
+	display: flex;
+	border-bottom: 1px solid hsl(var(--bg-900));
+}
+
+.app-header .logo {
+	user-select: none;
+	text-transform: uppercase;
+	font-weight: 300;
+	min-width: 200px;
+	letter-spacing: 4px;
+	display: flex;
+	align-items: center;
+}
+
+@media (max-width: 950px) {
+	.app-header .logo {
+		display: none;
+	}
+}
+
+.app-header > .address {
+	display: flex;
+	width: 100%;
+}
+.app-header > .address > * {
+	margin-right: 6px;
+}
+.app-header > .address > input {
+	width: 100%;
+}
+.app-header > .address > button {
+	width: 120px;
+}
+</style>
+<style>
+/*! modern-normalize v2.0.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
+
+/*
+Document
+========
+*/
+
+/**
+Use a better box model (opinionated).
+*/
+
+*,
+::before,
+::after {
+	box-sizing: border-box;
+}
+
+html {
+	/* Improve consistency of default fonts in all browsers. (https://github.com/sindresorhus/modern-normalize/issues/3) */
+	font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+	line-height: 1.15; /* 1. Correct the line height in all browsers. */
+	-webkit-text-size-adjust: 100%; /* 2. Prevent adjustments of font size after orientation changes in iOS. */
+	-moz-tab-size: 4; /* 3. Use a more readable tab size (opinionated). */
+	tab-size: 4; /* 3 */
+}
+
+/*
+Sections
+========
+*/
+
+body {
+	margin: 0; /* Remove the margin in all browsers. */
+}
+
+/*
+Grouping content
+================
+*/
+
+/**
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+*/
+
+hr {
+	height: 0; /* 1 */
+	color: inherit; /* 2 */
+}
+
+/*
+Text-level semantics
+====================
+*/
+
+/**
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr[title] {
+	text-decoration: underline dotted;
+}
+
+/**
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+	font-weight: bolder;
+}
+
+/**
+1. Improve consistency of default fonts in all browsers. (https://github.com/sindresorhus/modern-normalize/issues/3)
+2. Correct the odd 'em' font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+	font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; /* 1 */
+	font-size: 1em; /* 2 */
+}
+
+/**
+Add the correct font size in all browsers.
+*/
+
+small {
+	font-size: 80%;
+}
+
+/**
+Prevent 'sub' and 'sup' elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+	font-size: 75%;
+	line-height: 0;
+	position: relative;
+	vertical-align: baseline;
+}
+
+sub {
+	bottom: -0.25em;
+}
+
+sup {
+	top: -0.5em;
+}
+
+/*
+Tabular data
+============
+*/
+
+/**
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+*/
+
+table {
+	text-indent: 0; /* 1 */
+	border-color: inherit; /* 2 */
+}
+
+/*
+Forms
+=====
+*/
+
+/**
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+	font-family: inherit; /* 1 */
+	font-size: 100%; /* 1 */
+	line-height: 1.15; /* 1 */
+	margin: 0; /* 2 */
+}
+
+/**
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+	text-transform: none;
+}
+
+/**
+Correct the inability to style clickable types in iOS and Safari.
+*/
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+	appearance: button;
+}
+
+/**
+Remove the inner border and padding in Firefox.
+*/
+
+::-moz-focus-inner {
+	border-style: none;
+	padding: 0;
+}
+
+/**
+Restore the focus styles unset by the previous rule.
+*/
+
+:-moz-focusring {
+	outline: 1px dotted ButtonText;
+}
+
+/**
+Remove the additional ':invalid' styles in Firefox.
+See: https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737
+*/
+
+:-moz-ui-invalid {
+	box-shadow: none;
+}
+
+/**
+Remove the padding so developers are not caught out when they zero out 'fieldset' elements in all browsers.
+*/
+
+legend {
+	padding: 0;
+}
+
+/**
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+	vertical-align: baseline;
+}
+
+/**
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+	height: auto;
+}
+
+/**
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type="search"] {
+	appearance: textfield; /* 1 */
+	outline-offset: -2px; /* 2 */
+}
+
+/**
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+	-webkit-appearance: none;
+}
+
+/**
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to 'inherit' in Safari.
+*/
+
+::-webkit-file-upload-button {
+	-webkit-appearance: button; /* 1 */
+	font: inherit; /* 2 */
+}
+
+/*
+Interactive
+===========
+*/
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+	display: list-item;
+}
+</style>
+<style>
+.app-sidebar {
+	color: hsl(var(--bg-50));
+	background-color: hsl(var(--bg-950));
+	user-select: none;
+	display: flex;
+	flex-direction: column;
+}
+
+.app-sidebar .topic-group {
+	display: flex;
+	flex-direction: column;
+}
+
+.app-sidebar .topic-group:first-child .topic-group-name {
+	padding-top: 8px;
+}
+
+.app-sidebar .topic-group-name {
+	padding-left: 16px;
+	padding-top: 16px;
+	padding-bottom: 4px;
+	font-size: 12px;
+	letter-spacing: 1px;
+	font-weight: medium;
+	color: hsl(var(--bg-400));
+	border-right: 1px solid hsl(var(--bg-800));
+	text-transform: uppercase;
+}
+
+.app-sidebar .topic {
+	display: flex;
+	align-items: center;
+	height: 36px;
+	padding: 4px 8px 4px 16px;
+	border-right: 1px solid hsl(var(--bg-800));
+}
+
+.app-sidebar .topic-title {
+	color: hsl(var(--bg-300));
+}
+
+.app-sidebar .sidebar-fill {
+	height: 100%;
+	border-right: 1px solid hsl(var(--bg-800));
+}
+
+.app-sidebar > div.topic {
+	cursor: pointer;
+	transition: 0.1s;
+}
+
+.app-sidebar .topic > img,
+.app-sidebar .topic > svg {
+	width: 20px;
+	height: 20px;
+	margin-right: 6px;
+}
+
+.app-sidebar .topic.selected {
+	background-color: hsl(var(--bg-900)) !important;
+	border-right: 1px solid hsl(var(--bg-900)) !important;
+	border-top: 1px solid hsl(var(--bg-800));
+	border-bottom: 1px solid hsl(var(--bg-800));
+}
+.app-sidebar .topic:not(.selected) {
+	cursor: pointer;
+}
+
+.app-sidebar .topic:hover {
+	background-color: hsl(var(--bg-900));
+	border-right: 1px solid hsl(var(--bg-900)) !important;
+}
+</style>
+<style>
+.app-console-input {
+	display: grid;
+	grid-template: auto / 70px minmax(auto, 500px) 80px 80px 80px 80px;
+	user-select: none;
+	padding: 6px 12px;
+	align-items: center;
+	gap: 4px;
+	background-color: hsl(var(--bg-950));
+	z-index: 1; /* good fix :) */
+}
+</style>
+<style>
+.widget-input {
+	border-radius: 6px;
+	padding: 2px 8px;
+	height: 32px;
+	background-color: hsl(var(--bg-800));
+	border: 1px solid hsl(var(--bg-700));
+	color: hsl(var(--bg-300));
+}
+
+.widget-input:disabled {
+	background-color: hsl(var(--bg-800) / 0.5);
+	border: 1px solid hsl(var(--bg-700) / 0.5);
+	color: hsl(var(--bg-300) / 0.5);
+}
+</style>
+<style>
+.widget-copy {
+	position: absolute;
+	right: 25px;
+	bottom: 15px;
+	cursor: pointer;
+	user-select: none;
+}
+</style>
+<style>
+.widget-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 6px;
+	padding: 0 8px;
+	height: 32px;
+	cursor: pointer;
+}
+
+.widget-button:not(.primary) {
+	background-color: hsl(var(--bg-900));
+	border: 1px solid hsl(var(--bg-800));
+	color: hsl(var(--bg-200));
+}
+
+.widget-button:not(.primary):disabled {
+	background-color: hsl(var(--bg-900) / 0.5);
+	border: 1px solid hsl(var(--bg-800) / 0.5);
+	color: hsl(var(--bg-200) / 0.5);
+}
+
+.widget-button:not(.primary):disabled:hover {
+	background-color: hsl(var(--bg-900) / 0.5);
+	border: 1px solid hsl(var(--bg-800) / 0.5);
+	color: hsl(var(--bg-200) / 0.5);
+}
+
+.widget-button:not(.primary):hover {
+	background-color: hsl(var(--bg-800));
+	border: 1px solid hsl(var(--bg-700));
+	color: hsl(var(--bg-100));
+}
+
+.widget-button > .icon {
+	width: 16px;
+	height: 16px;
+	margin-right: 6px;
+	color: hsl(var(--bg-300));
+}
+
+.widget-button:not(.primary):hover > .icon {
+	color: hsl(var(--bg-200));
+}
+
+.widget-button:not(.primary):active {
+	background-color: hsl(var(--bg-700));
+	border: 1px solid hsl(var(--bg-600));
+	color: hsl(var(--bg-50));
+}
+
+.widget-button:not(.primary):active > .icon {
+	color: hsl(var(--bg-100));
+}
+
+/* PRIMARY BUTTON */
+.widget-button.primary {
+	background-color: hsl(var(--pr-500) / 0.1);
+	border: 1px solid hsl(var(--pr-500) / 0.3);
+	color: hsl(var(--pr-300));
+}
+
+.widget-button.primary > .icon {
+	color: hsl(var(--pr-300));
+}
+
+.widget-button.primary:hover {
+	background-color: hsl(var(--pr-500) / 0.2);
+	border: 1px solid hsl(var(--pr-400) / 0.6);
+	color: hsl(var(--pr-200));
+}
+
+.widget-button.primary:hover > .icon {
+	color: hsl(var(--pr-200));
+}
+
+.widget-button.primary:active {
+	background-color: hsl(var(--pr-500) / 0.3);
+	border: 1px solid hsl(var(--pr-400) / 0.8);
+	color: hsl(var(--pr-100));
+}
+
+.widget-button.primary:active > .icon {
+	color: hsl(var(--pr-100));
+}
+
+.widget-button.primary:disabled {
+	opacity: 0.5;
+}
+</style>
+<style>
+.panel-settings {
+	overflow-y: scroll;
+}
+.panel-settings > .group {
+	border-radius: 8px;
+	background-color: rgb(37, 37, 37);
+	border: 1px solid rgb(71, 71, 71);
+	padding: 10px;
+	margin: 10px;
+	width: 400px;
+}
+.panel-settings > .group > .header {
+	color: rgb(95, 95, 95);
+	margin-bottom: 10px;
+	margin-left: 5px;
+	user-select: none;
+}
+</style>
+<style>
+.panel-console {
+	display: grid;
+	grid-template: calc(100% - 42px) 42px / auto;
+}
+.panel-console > .content {
+	width: 100%;
+	height: 100%;
+	padding: 12px 25px;
+	box-sizing: border-box;
+	overflow-y: scroll;
+}
+.panel-console > .content > .lines {
+	font-family: 'Fira Code', 'Courier New', Courier, monospace;
+	font-size: 14px;
+	line-height: 20px;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	cursor: text;
+}
+</style>
+<style>
+.panel-xss {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	position: relative;
+	display: grid;
+	grid-template: calc(100% - 42px) 42px / auto;
+}
+.panel-xss > div.html {
+	font-family: 'Fira Code', 'Courier New', Courier, monospace;
+	font-size: 14px;
+	line-height: 16px;
+	padding: 12px 25px;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	overflow-y: scroll;
+	cursor: text;
+}
+.panel-xss > div.html pre {
+	margin: 0;
+}
+</style>
+<style>
+.settings-uiToggle {
+	margin: 5px 10px;
+	padding: 5px 10px;
+	display: grid;
+	grid-template: auto / 200px auto;
+}
+.settings-uiToggle > .label {
+	color: #908F8F;
+	user-select: none;
+}
+.settings-uiToggle > .value {
+	justify-self: end;
+}
+
+.settings-uiToggle > .value {
+	position: relative;
+	display: inline-block;
+	width: 50px;
+	height: 23px;
+}
+
+.settings-uiToggle > .value > input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.settings-uiToggle > .value > .slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #414243;
+	transition: .1s;
+}
+
+.settings-uiToggle > .value > .slider:before {
+	position: absolute;
+	content: "";
+	height: 17px;
+	width: 17px;
+	left: 3px;
+	bottom: 3px;
+	background-color: #5F6060;
+	transition: .1s;
+}
+
+.settings-uiToggle > .value > input:checked + .slider {
+	background-color: #575756;
+}
+
+.settings-uiToggle > .value > input:checked + .slider:before {
+	background-color: white;
+}
+
+/* .settings-uiToggle > .value > input:focus + .slider {
+	box-shadow: 0 0 1px #2196F3;
+} */
+
+.settings-uiToggle > .value > input:checked + .slider:before {
+	transform: translateX(26px);
+}
+
+.settings-uiToggle > .value > .slider.round {
+	border-radius: 28px;
+}
+
+.settings-uiToggle > .value > .slider.round:before {
+	border-radius: 50%;
+}
+</style>
+<style>
+.settings-uiNumber {
+	margin: 5px 10px;
+	padding: 5px 10px;
+	display: grid;
+	grid-template: 27px 27px / auto 100px;
+	align-items: center;
+}
+
+.settings-uiNumber > .label {
+	color: #908F8F;
+	user-select: none;
+	grid-row: 1;
+	grid-column: 1;
+}
+
+.settings-uiNumber > .slider {
+	grid-row: 2;
+	grid-column: 1 / span 2;
+	padding-top: 5px;
+}
+
+.settings-uiNumber > .slider > input {
+	appearance: none;
+	width: 100%;
+	height: 15px;
+	border-radius: 5px;
+	background: #2B2A28;
+	outline: none;
+}
+.settings-uiNumber > .slider > input::-moz-range-progress {
+	background-color: #41403E;
+	height: 12px;
+	border-radius: 5px;
+}
+.settings-uiNumber > .slider > input::-webkit-slider-thumb {
+	appearance: none;
+	width: 17px;
+	height: 17px;
+	border-radius: 50%;
+	background: #575756;
+	cursor: pointer;
+}
+.settings-uiNumber > .slider > input::-moz-range-thumb {
+	width: 17px;
+	height: 17px;
+	border-radius: 50%;
+	background: #575756;
+	cursor: pointer;
+}
+
+.settings-uiNumber > .value {
+	justify-self: end;
+	position: relative;
+	grid-row: 1;
+	grid-column: 2;
+}
+
+.settings-uiNumber > .value > .unit {
+	position: absolute;
+	left: 55px;
+	user-select: none;
+	line-height: 27px;
+	color: #908F8F;
+}
+
+.settings-uiNumber > .value > input {
+	background-color: #2B2A28;
+	color: #FFF;
+	border: 1px solid #41403E;
+	border-radius: 5px;
+	height: 25px;
+	width: 40px;
+	text-align: right;
+	padding: 0 5px;
+}
+.settings-uiNumber > .value > input:focus {
+	outline: none;
+}
+</style>
+<style>
+.settings-uiStatus {
+	margin: 5px 10px;
+	padding: 5px 10px;
+	display: grid;
+	grid-template: auto / 200px auto;
+	user-select: none;
+}
+.settings-uiStatus > .label {
+	color: #908F8F;
+}
+.settings-uiStatus > .value {
+	justify-self: end;
+}
+</style>
+</head>
+<body>
+
+<template id="app-main">
+	<div class="app-main">
+		<app-header :conn="conn"></app-header>
+		<div class="m">
+			<app-sidebar :topics="sidebarTopics" @select-topic="changeCurrentTopic"></app-sidebar>
+			<keep-alive>
+				<component v-if="currentTopic != null" :is="currentTopic.is" :key="currentTopic.title" v-bind="currentTopic.props"></component>
+				<panel-console v-else :console="console"></panel-console>
+			</keep-alive>
+		</div>
+	</div>
+</template>
+<template id="app-header">
+	<div class="app-header">
+		<div class="logo">Aurascope</div>
+		<div class="address">
+			<input type="text" class="widget-input" v-model="conn.address" @keydown.enter="conn.connect()" :readonly="conn.connected" :disabled="conn.connected" />
+			<button class="widget-button primary" v-if="!conn.connected" @click="conn.connect()"><icon-power></icon-power>&nbsp;Connect</button>
+			<button class="widget-button" v-if="conn.connected" @click="conn.disconnect()"><icon-power></icon-power>&nbsp;Disconnect</button>
+		</div>
+	</div>
+</template>
+<template id="app-sidebar">
+	<div class="app-sidebar">
+		<div class="topic-group" v-for="(topicGroup, groupName) in groupedTopics">
+			<div class="topic-group-name">{{groupName}}</div>
+			<div
+				v-for="(topic, index) in topicGroup"
+				@click="selectTopic(topic)"
+				@wheel="selectTopic(topic)"
+				class="topic"
+				:class="{ selected: this.selectedTopic?.title == topic.title }"
+			>
+				<img class="topic-icon" v-if="topic.icon" :src="topic.icon.url" :style="topic.icon.style" />
+				<span v-else></span>
+				<span class="topic-title">{{ topic.title }}</span>
+			</div>
+		</div>
+		<div class="sidebar-fill"></div>
+	</div>
+</template>
+<template id="app-console-input">
+	<div class="app-console-input">
+		<span>Console:</span>
+		<input
+			class="widget-input"
+			type="text"
+			v-model="console.input"
+			@keyup.enter="submit"
+			@keyup.up="historyNav(-1)"
+			@keyup.down="historyNav(1)"
+			:disabled="disabled">
+		<button class="widget-button primary" @click="submit" :disabled="disabled">Submit</button>
+		<button class="widget-button" @click="exit" :disabled="disabled">Exit</button>
+		<button class="widget-button" @click="clear()"><icon-clear></icon-clear>&nbsp;Clear</button>
+		<button class="widget-button" v-if="console.paused" @click="console.paused = false;"><icon-play></icon-play>&nbsp;Play</button>
+		<button class="widget-button" v-if="!console.paused" @click="console.paused = true;"><icon-pause></icon-pause>&nbsp;Pause</button>
+	</div>
+</template>
+<template id="widget-button">
+	<button class="widget-button" :class="[primary !== undefined ? 'primary' : 'widget-button']"><component v-if="icon != null" :is="icon"></component><span>&nbsp;{{ label }}</span></button>
+</template>
+<template id="widget-copy">
+	<div class="widget-copy" title="Copy to clipboard" @click="copyText"><span style="font-size: .875em; margin-right: .125em; position: relative; top: -.25em; left: -.125em">📄<span style="position: absolute; top: .25em; left: .25em">📄</span></span></div>
+</template>
+<template id="panel-settings">
+	<div class="panel-settings">
+		<div v-for="(group, gindex) in tab.groups" :key="gindex" class="group">
+			<div class="header" v-if="group.header">{{ group.header }}</div>
+			<template v-for="(item, iindex) in group.items" :key="iindex" class="item">
+				<component :is="'settings-ui' + item.element" :cvars="cvars" :item="item"></component>
+			</template>
+		</div>
+	</div>
+</template>
+<template id="panel-console">
+	<div class="panel-console">
+		<div class="content" ref="consoleRef" @copy="copyEvent">
+			<pre class="lines">
+				<div v-for="line in linesCopy" :key="line" class="line">{{ line }}</div>
+			</pre>
+		</div>
+		<app-coninput :console="console"></app-coninput>
+	</div>
+</template>
+<template id="panel-xss">
+	<div class="panel-xss">
+		<div v-html="html" class="html" @copy="copyEvent"></div>
+		<app-coninput :console="console"></app-coninput>
+	</div>
+</template>
+<template id="settings-uiToggle">
+	<div class="settings-uiToggle">
+		<div class="label">{{ item.label }}</div>
+		<label class="value" @wheel="enabled = $event.deltaY < 0">
+			<input type="checkbox" v-model="enabled">
+			<span class="slider round"></span>
+		</label>
+	</div>
+</template>
+<template id="settings-uiNumber">
+	<div class="settings-uiNumber">
+		<div class="label">{{ item.label }}</div>
+		<div class="value">
+			<div v-if="item.unit" class="unit">{{ item.unit[0] }}</div>
+			<input type="text" v-model="valueString" @change="commit" @dblclick="$event.target.select()">
+		</div>
+		<div class="slider"><input type="range" v-model="valueNumber" :min="item.min" :max="item.max" :step="item.step" @change="commit"></div>
+	</div>
+</template>
+<template id="settings-uiStatus">
+	<div class="settings-uiStatus">
+		<div class="label">{{ item.label }}</div>
+		<div class="value">{{ answer }}</div>
+	</div>
+</template>
+<template id="icon-pause">
+	<svg class="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
+		<path fill="currentColor" d="M5.75 3a.75.75 0 0 0-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 0 0 .75-.75V3.75A.75.75 0 0 0 7.25 3h-1.5Zm7 0a.75.75 0 0 0-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 0 0 .75-.75V3.75a.75.75 0 0 0-.75-.75h-1.5Z"/>
+	</svg>
+</template>
+<template id="icon-play">
+	<svg class="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
+		<path fill="currentColor" d="M6.3 2.841A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.269l9.344-5.89a1.5 1.5 0 0 0 0-2.538L6.3 2.84Z"/>
+	</svg>
+</template>
+<template id="icon-clear">
+	<svg class="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
+		<path fill="currentColor" fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16a8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94L8.28 7.22Z" clip-rule="evenodd"/>
+	</svg>
+</template>
+<template id="icon-xmark">
+	<svg class="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
+		<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+	</svg>
+</template>
+<template id="icon-power">
+	<svg class="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
+		<path fill="currentColor" fill-rule="evenodd" d="M10 2a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-1.5 0v-7.5A.75.75 0 0 1 10 2ZM5.404 4.343a.75.75 0 0 1 0 1.06a6.5 6.5 0 1 0 9.192 0a.75.75 0 1 1 1.06-1.06a8 8 0 1 1-11.313 0a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/>
+	</svg>
+</template>
+<div id="app">
+	<app-main></app-main>
+</div>
+<noscript>Aurascope is a WebApp and requires JS.</noscript>
+</body>
+
+<script>
+"use strict"
+
+let SOCKET = null;
+
+function argv() {
+	let result = {};
+	for (var arg of window.location.hash.substring(1).split("&")) {
+		let pos = arg.indexOf("=");
+		if (pos >= 0) {
+			result[arg.substring(0, pos)] = decodeURIComponent(arg.substring(pos + 1));
+		}
+	}
+	return result;
+}
+
+var MAX_CONSOLE_LINES = 10000;
+
+const convertArrayToObject = (array, key) => {
+	const initialValue = {};
+	return array.reduce((obj, item) => {
+		return {
+			...obj,
+			[item[key]]: item,
+		};
+	}, initialValue);
+};
+
+var AppMain = {
+	name: 'app-main',
+	data() {
+		let self = this;
+		let console = {
+			lines: [],
+			input: "",
+			history: [],
+			historyIndex: 0,
+			get ready() {
+				return self.conn.ready;
+			},
+			get paused() {
+				return self.conn.paused;
+			},
+			set paused(value) {
+				self.conn.paused = value;
+			},
+			submit(text) {
+				self.consoleInput(text);
+			},
+			clear() {
+				self.clear();
+			},
+		};
+		let consoleTopic = {
+			title: "Console",
+			is: "panel-console",
+			groupid: "Console",
+			props: {
+				console: console,
+			},
+			icon: {
+				url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAjklEQVR4nO3VPQqEMBCG4fcSLnok2VsnhaBWa2Gv3mNsYiNkCncSRPPBNJPiIUN+oORt+QIbIMa1Aq0GrwnQoxYNlsQVzXth60iBbz1qB4zAJzfch970By5X4Ar4hf4MNLlgwk6nsDbwdLg6jbrOBQ+Rw+WVp9FbwF3kOmmws4AtIgW+zX/sE6JOg0uelx3XxAOblnvqngAAAABJRU5ErkJggg==",
+				style: {
+					filter: "invert(1.0)",
+					opacity: "0.8",
+				}
+			}
+		};
+		return {
+			// Connection information
+			conn: {
+				address: "ws://localhost:30145/",
+				error: null,
+				paused: false,
+				ready: false,
+				get connected() {
+					return self.socket != null;
+				},
+				connect() {
+					if (!self.conn.connected) {
+						self.connect();
+					}
+				},
+				disconnect() {
+					if (self.conn.connected) {
+						self.disconnect();
+					}
+				},
+			},
+			// WebSocket instance, null if disconnected
+			socket: null,
+			// Current topic being shown
+			currentTopic: consoleTopic,
+			// Page content
+			pages: {},
+			// Console
+			console: console,
+			consoleTopic: consoleTopic,
+			// Settings UI
+			settings: {
+				cvars: {
+					sendPropValue(cvar, value = undefined) {
+						if (value === undefined) {
+							value = self.settings.cvars[cvar];
+						}
+						else {
+							self.settings.cvars[cvar] = value;
+						}
+						self.sendCmd("@" + cvar + " " + value);
+					},
+					fetchSettings() {
+						self.sendCmd("@settings!");
+					},
+				},
+				ui: {
+					icons: {},
+					tabs: [],
+				},
+			},
+		};
+	},
+	computed: {
+		sidebarTopics() {
+			return [
+				this.consoleTopic,
+
+				...this.settings.ui.tabs.map(tab => ({
+					title: tab.title,
+					is: "panel-settings",
+					groupid: "Settings",
+					props: {
+						cvars: this.settings.cvars,
+						tab: tab,
+					},
+					icon: this.settings.ui.icons[tab.title],
+				})),
+
+				...Object.keys(this.pages).sort().map(page => ({
+					title: page,
+					is: "panel-xss",
+					groupid: "Debugger",
+					props: {
+						page: this.pages[page],
+						console: this.console,
+					},
+					icon: null,
+				})),
+			];
+		}
+	},
+	methods: {
+		connect() {
+			this.conn.error = null;
+			this.conn.paused = false;
+			this.conn.ready = false;
+
+			if (this.socket) {
+				this.disconnect(null);
+			}
+
+			// Move the window location to reflect the connection address
+			window.location.hash = "address=" + encodeURIComponent(this.conn.address);
+
+			let sock = new WebSocket(this.conn.address);
+			this.socket = window.SOCKET = sock;
+			sock.onopen = e => {
+				this.conn.ready = true;
+				this.clear();
+			};
+			sock.onmessage = e => {
+				try {
+					if (e.data.startsWith("{")) {
+						let data = JSON.parse(e.data);
+						switch (data.target) {
+							case 'console/log':
+								this.consoleLog("" + data.message);
+								break;
+							case 'debug/write':
+								this.writePage(data.message.scope, data.message.content);
+								break;
+							case 'settings/cvars':
+								for (let line of data.message.split("\n")) {
+									let [key, value] = line.split("=", 2);
+									this.settings.cvars[key] = value;
+								}
+								break;
+							case 'settings/ui':
+								this.settings.ui = JSON.parse(data.message);
+								break;
+							default:
+								console.log(data.target, data.message);
+								break;
+						}
+					}
+					else {
+						let [line, text] = a.data.split("\n", 2);
+						this.writePage(line, text);
+					}
+				}
+				catch (ex) {
+					console.error(ex);
+				}
+			};
+			sock.onclose = e => {
+				this.disconnect(null);
+			}
+			sock.onerror = ex => {
+				this.conn.error = "Can't establish a connection to the server.";
+				console.error(ex);
+				this.disconnect(ex);
+			};
+		},
+		disconnect() {
+			if (this.socket) {
+				this.socket.close();
+				this.socket = window.SOCKET = null;
+			}
+			this.conn.ready = false;
+			this.settings.ui.tabs = [];
+		},
+		writePage(scope, content) {
+			if (!this.conn.paused) {
+				if (!this.pages[scope]) {
+					this.pages[scope] = {};
+				}
+				this.pages[scope].html = "" + content;
+			}
+		},
+		// Clears the pages and console
+		clear() {
+			this.pages = {};
+			this.console.lines = [];
+		},
+		changeCurrentTopic(topic) {
+			this.currentTopic = topic;
+		},
+		consoleInput(text) {
+			if (this.socket) {
+				this.console.lines.push("> " + text);
+				this.socket.send(text);
+			}
+			else {
+				this.console.lines.push("Please connect to the host first.");
+			}
+		},
+		consoleClear() {
+			this.console.lines = [];
+		},
+		consoleLog(line) {
+			this.console.lines.push(line);
+			if (this.console.lines.length > (MAX_CONSOLE_LINES + 100)) {
+				this.console.lines = this.console.lines.slice(this.console.lines.length - MAX_CONSOLE_LINES)
+			}
+		},
+		sendCmd(cmd) {
+			if (this.socket) {
+				this.socket.send(cmd);
+			}
+		},
+	},
+	mounted() {
+		let args = argv();
+		if ('address' in args) {
+			this.conn.address = args.address;
+			this.connect();
+		}
+	},
+	template: '#app-main',
+};
+</script>
+<script>
+"use strict"
+
+var AppHeader = {
+	name: 'app-header',
+	template: '#app-header',
+	data() {
+		return {};
+	},
+	props: ['conn'],
+};
+</script>
+<script>
+"use strict"
+
+var AppSidebar = {
+	name: 'app-sidebar',
+	template: '#app-sidebar',
+
+	data() {
+		return {
+			selectedTopic: null,
+		};
+	},
+	// [...{ title: string, is: string, props: object, groupid: string, icon: { url: string, style: object }? } ]
+	props: ['topics'],
+	watch: {
+		topics() {
+			// Make sure to select a valid topic at all times
+			if (this.selectedTopic == null || !this.topics.map(topic => topic.title).includes(this.selectedTopic.title)) {
+				this.selectTopic(this.topics.length > 0 ? this.topics[0] : null);
+			}
+		},
+	},
+	computed: {
+		groupedTopics() {
+			// Group this.topics by groupid
+			let groups = {};
+			for (let topic of this.topics) {
+				if (topic.groupid in groups) {
+					groups[topic.groupid].push(topic);
+				}
+				else {
+					groups[topic.groupid] = [topic];
+				}
+			}
+			return groups;
+		},
+	},
+	methods: {
+		hasGroupSeparator(index) {
+			if (index < 1 || index >= this.topics.length) {
+				return false;
+			}
+			return this.topics[index].groupid !== this.topics[index - 1].groupid;
+		},
+		selectTopic(topic) {
+			this.selectedTopic = topic;
+			this.$emit('select-topic', topic);
+		},
+	},
+	mounted() {
+		this.selectTopic(this.topics.length > 0 ? this.topics[0] : null);
+	},
+};
+</script>
+<script>
+"use strict"
+
+var AppConsoleInput = {
+	name: 'app-console-input',
+	template: '#app-console-input',
+	data() {
+		let self = this;
+		return {
+			get disabled() {
+				return self.console.ready == false;
+			},
+		};
+	},
+	props: ['console'],
+	methods: {
+		submit() {
+			let text = this.console.input;
+			this.console.submit(text);
+			this.console.input = "";
+			this.console.history.push(text);
+			this.console.historyIndex = this.console.history.length;
+		},
+		historyNav(dir) {
+			let index = this.console.historyIndex + dir;
+			index = Math.min(index, this.console.history.length);
+			index = Math.max(index, 0);
+			if (index != this.console.historyIndex) {
+				if (index >= 0 && index < this.console.history.length) {
+					this.console.input = this.console.history[index];
+				}
+				else {
+					this.console.input = "";
+				}
+				this.console.historyIndex = index;
+			}
+		},
+		clear() {
+			this.console.clear();
+		},
+		exit() {
+			this.console.submit("exit!");
+		},
+	},
+};
+</script>
+<script>
+"use strict"
+
+var WidgetButton = {
+	name: 'widget-button',
+	template: '#widget-button',
+	data() {
+		return {};
+	},
+	props: ['icon', 'label', 'primary'],
+};
+</script>
+<script>
+"use strict"
+
+var WidgetCopy = {
+	name: 'widget-copy',
+	template: '#widget-copy',
+	data() {
+		return {};
+	},
+	props: ['text'],
+	methods: {
+		copyText() {
+			window.navigator.clipboard.writeText(this.text);
+		},
+	},
+};
+</script>
+<script>
+"use strict";
+
+var PanelSettings = {
+	name: 'panel-settings',
+	template: '#panel-settings',
+
+	data() {
+		return {};
+	},
+
+	props: ['cvars', 'tab'],
+
+	mounted() {
+		this.cvars.fetchSettings();
+	},
+	activated() {
+		this.cvars.fetchSettings();
+	},
+	updated() {
+		this.cvars.fetchSettings();
+	},
+};
+</script>
+<script>
+"use strict"
+
+var PanelConsole = {
+	name: 'panel-console',
+	template: '#panel-console',
+
+	data() {
+		return {
+			scrollOncePerTick: true,
+		};
+	},
+	props: ['console'],
+	computed: {
+		linesCopy() {
+			return this.console.lines.slice();
+		},
+		copyText() {
+			return this.console.lines.join("\n");
+		},
+	},
+	watch: {
+		linesCopy() {
+			this.scrollToEnd(false);
+		},
+	},
+	methods: {
+		scrollToEnd(force) {
+			if (this.scrollOncePerTick) {
+				let el = this.$refs.consoleRef;
+				// From StackOverflow: Scroll to the bottom only if we're already at the bottom
+				if (force || el.scrollHeight - el.scrollTop - el.clientHeight < 1) {
+					this.scrollOncePerTick = false;
+					Vue.nextTick(() => {
+						el.scrollTop = el.scrollHeight;
+						this.scrollOncePerTick = true;
+					});
+				}
+			}
+		},
+		copyEvent(e) {
+			if (document.getSelection().toString() == "") {
+				e.clipboardData.setData("text/plain", this.copyText);
+				e.preventDefault();
+			}
+		},
+	},
+	mounted() {
+		this.scrollToEnd(true);
+	},
+};
+</script>
+<script>
+"use strict"
+
+var PanelXss = {
+	name: 'panel-xss',
+	template: '#panel-xss',
+
+	data() {
+		return {}
+	},
+	props: ['page', 'console'],
+	computed: {
+		html() {
+			return this.page.html;
+		},
+	},
+	methods: {
+		copyText() {
+			window.navigator.clipboard.writeText(this.html);
+		},
+		copyEvent(e) {
+			if (document.getSelection().toString() == "") {
+				e.clipboardData.setData("text/plain", this.html);
+				e.preventDefault();
+			}
+		},
+	},
+};
+</script>
+<script>
+"use strict"
+
+var SettingsUiToggle = {
+	name: 'settings-uiToggle',
+	template: '#settings-uiToggle',
+	data() {
+		return {};
+	},
+	computed: {
+		enabled: {
+			get() {
+				return this.cvars[this.item.cvar] == 'true';
+			},
+			set(value) {
+				this.cvars.sendPropValue(this.item.cvar, value ? 'true' : 'false');
+			},
+		}
+	},
+	props: ['cvars', 'item'],
+};
+</script>
+<script>
+"use strict"
+
+var SettingsUiNumber = {
+	name: 'settings-uiNumber',
+	template: '#settings-uiNumber',
+	data() {
+		return {};
+	},
+	props: ['cvars', 'item'],
+	computed: {
+		valueNumber: {
+			get() {
+				return parseFloat(this.valueString);
+			},
+			set(value) {
+				let precision = -Math.round(Math.log(this.item.step) / Math.log(10));
+				this.valueString = parseFloat(value).toFixed(precision);
+			},
+		},
+		valueString: {
+			get() {
+				return this.cvars[this.item.cvar];
+			},
+			set(value) {
+				// Update our local copy of the cvar value
+				// Commit to sending it when done editing
+				this.cvars[this.item.cvar] = "" + value;
+			},
+		},
+	},
+	methods: {
+		commit() {
+			this.cvars.sendPropValue(this.item.cvar);
+			this.cvars.fetchSettings();
+		},
+	},
+};
+</script>
+<script>
+"use strict"
+
+var SettingsUiStatus = {
+	name: 'settings-uiStatus',
+	template: '#settings-uiStatus',
+	data() {
+		return {};
+	},
+	props: ['cvars', 'item'],
+	computed: {
+		answer() {
+			return this.cvars[this.item.cvar] == 'true' ? 'Yes' : 'No';
+		},
+	},
+};
+</script>
+<script>
+"use strict"
+
+var IconPause = {
+	name: 'icon-pause',
+	template: '#icon-pause',
+	data() {
+		return {};
+	},
+};
+</script>
+<script>
+"use strict"
+
+var IconPlay = {
+	name: 'icon-play',
+	template: '#icon-play',
+	data() {
+		return {};
+	},
+};
+</script>
+<script>
+"use strict"
+
+var IconClear = {
+	name: 'icon-clear',
+	template: '#icon-clear',
+	data() {
+		return {};
+	},
+};
+</script>
+<script>
+"use strict"
+
+var IconXMark = {
+	name: 'icon-xmark',
+	template: '#icon-xmark',
+	data() {
+		return {};
+	},
+};
+</script>
+<script>
+"use strict"
+
+var IconPower = {
+	name: 'icon-power',
+	template: '#icon-power',
+	data() {
+		return {};
+	},
+};
+</script>
+<script>
+Vue.createApp({
+	data() {
+		return {};
+	},
+}).component('app-main', AppMain)
+	.component('app-header', AppHeader)
+	.component('app-sidebar', AppSidebar)
+	.component('app-coninput', AppConsoleInput)
+	.component('panel-console', PanelConsole)
+	.component('panel-xss', PanelXss)
+	.component('panel-settings', PanelSettings)
+	.component('widget-copy', WidgetCopy)
+	.component('widget-button', WidgetButton)
+	.component('settings-uiToggle', SettingsUiToggle)
+	.component('settings-uiStatus', SettingsUiStatus)
+	.component('settings-uiNumber', SettingsUiNumber)
+	.component('icon-play', IconPlay)
+	.component('icon-pause', IconPause)
+	.component('icon-clear', IconClear)
+	.component('icon-power', IconPower)
+	.component('icon-xmark', IconXMark)
+	.mount('#app');
+</script>
+</html>
+
