@@ -11,7 +11,7 @@ var SettingsUiStatus = {
 	props: ['cvars', 'item'],
 	computed: {
 		answer() {
-			return this.cvars[this.item.cvar] == 'true' ? 'Yes' : 'No';
+			return this.cvars[this.item.cvar];
 		},
 	},
 };

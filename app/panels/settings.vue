@@ -12,6 +12,18 @@ var PanelSettings = {
 
 	props: ['cvars', 'tab'],
 
+	methods: {
+		uiElement(item) {
+			switch (item.element) {
+				case 'Number': return 'settings-uiNumber';
+				case 'Status': return 'settings-uiStatus';
+				case 'Text': return 'settings-uiText';
+				case 'Toggle': return 'settings-uiToggle';
+				default: return 'settings-uiText';
+			}
+		},
+	},
+
 	mounted() {
 		this.cvars.fetchSettings();
 	},
@@ -29,7 +41,7 @@ var PanelSettings = {
 		<div v-for="(group, gindex) in tab.groups" :key="gindex" class="group">
 			<div class="header" v-if="group.header">{{ group.header }}</div>
 			<template v-for="(item, iindex) in group.items" :key="iindex" class="item">
-				<component :is="'settings-ui' + item.element" :cvars="cvars" :item="item"></component>
+				<component :is="uiElement(item)" :cvars="cvars" :item="item"></component>
 			</template>
 		</div>
 	</div>
